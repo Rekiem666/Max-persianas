@@ -493,4 +493,415 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 6px 12px;
-  color:
+  color: var(--text);
+  cursor: pointer;
+  font-size: 12px;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.2s;
+}
+.confirm-btn:hover { border-color: var(--accent); color: var(--accent); }
+.confirm-btn.primary { background: var(--accent); border-color: var(--accent); color: white; }
+.chat-input-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  padding: 10px 14px;
+  margin-top: 8px;
+}
+.chat-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  outline: none;
+  resize: none;
+  max-height: 120px;
+  line-height: 1.5;
+}
+.chat-input::placeholder { color: var(--muted); }
+.chat-send {
+  background: var(--accent);
+  border: none;
+  border-radius: 10px;
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.2s;
+  color: white;
+  font-size: 16px;
+}
+.chat-send:hover { background: #6a59e0; transform: scale(1.05); }
+.chat-send:disabled { background: var(--border); cursor: not-allowed; transform: none; }
+.typing {
+  display: flex; gap: 4px; align-items: center;
+  padding: 10px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  border-bottom-left-radius: 4px;
+  width: fit-content;
+}
+.typing span {
+  width: 6px; height: 6px;
+  background: var(--muted);
+  border-radius: 50%;
+  animation: bounce 1.2s infinite;
+}
+.typing span:nth-child(2) { animation-delay: 0.2s; }
+.typing span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes bounce {
+  0%,60%,100% { transform: translateY(0); }
+  30% { transform: translateY(-6px); }
+}
+.saved-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  background: rgba(0,229,160,0.15);
+  border: 1px solid rgba(0,229,160,0.3);
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 11px;
+  color: var(--green);
+  margin-top: 6px;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">MAX <span>●</span> Persianas</div>
+  <div class="fecha" id="fechaHoy"></div>
+</header>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('dashboard')">Dashboard</div>
+  <div class="tab" onclick="showTab('max')">⚡ MAX</div>
+  <div class="tab" onclick="showTab('leads')">Leads</div>
+  <div class="tab" onclick="showTab('ventas')">Ventas</div>
+  <div class="tab" onclick="showTab('pagos')">Pagos</div>
+  <div class="tab" onclick="showTab('gastos')">Gastos</div>
+  <div class="tab" onclick="showTab('fijos')">Gastos Fijos</div>
+</div>
+
+
+<div class="page" id="page-max">
+  <div class="chat-wrap">
+    <div class="chat-messages" id="chat-messages">
+      <div class="msg max">
+        <div class="msg-avatar">M</div>
+        <div class="msg-bubble">
+          Hola. Soy MAX. Dime qué pasó hoy — un lead, una venta, un pago, un gasto — y lo registro al momento.<br><br>
+          <span style="color:var(--muted); font-size:12px;">Ejemplos: "cerré con Ana, persianas sala, 12 mil sin factura" · "llegó lead por WhatsApp, quiere blackout" · "pagué nómina 12,500"</span>
+        </div>
+      </div>
+    </div>
+    <div class="chat-input-wrap">
+      <textarea class="chat-input" id="chat-input" placeholder="Dime qué pasó..." rows="1"
+        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage()}"
+        oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
+      <button class="chat-mic" id="chat-mic" onclick="toggleMic()" title="Dictar">🎤</button>
+      <button class="chat-send" id="chat-send" onclick="sendMessage()">↑</button>
+    </div>
+  </div>
+</div>
+
+<div class="page active" id="page-dashboard">
+
+  <div class="semaforo" id="semaforo-card">
+    <div class="semaforo-title">🎯 Punto de equilibrio diario</div>
+    <div class="necesitas" id="necesitas-val">$0</div>
+    <div class="necesitas-label">necesitas cerrar hoy para llegar a la meta</div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+    <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--muted); margin-bottom:4px;">
+      <span>Avance: <strong id="pct-avance" style="color:var(--text)">0%</strong></span>
+      <span>Meta: <strong id="meta-display" style="color:var(--text)">$0</strong></span>
+    </div>
+    <div id="estado-badge" class="estado-badge estado-yellow">⚠️ Cargando datos...</div>
+    <div class="semaforo-grid">
+      <div class="sem-item">
+        <div class="val green" id="sem-vendido">$0</div>
+        <div class="lbl">Vendido este mes</div>
+      </div>
+      <div class="sem-item">
+        <div class="val red" id="sem-faltante">$0</div>
+        <div class="lbl">Falta para meta</div>
+      </div>
+      <div class="sem-item">
+        <div class="val accent" id="sem-dias">0</div>
+        <div class="lbl">Días hábiles restantes</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="metrics-grid">
+    <div class="metric-card" style="animation-delay:0.1s">
+      <div class="metric-section">💰 Ventas del mes</div>
+      <div class="metric-row"><span class="metric-label">Total ventas</span><span class="metric-val green" id="m-ventas-total">$0</span></div>
+      <div class="metric-row"><span class="metric-label">Con factura</span><span class="metric-val green" id="m-ventas-factura">$0</span></div>
+      <div class="metric-row"><span class="metric-label">Sin factura</span><span class="metric-val green" id="m-ventas-nofactura">$0</span></div>
+      <div class="metric-row"><span class="metric-label">IVA por pagar</span><span class="metric-val red" id="m-iva-cobrado">$0</span></div>
+    </div>
+    <div class="metric-card" style="animation-delay:0.15s">
+      <div class="metric-section">📥 Cobros</div>
+      <div class="metric-row"><span class="metric-label">Cobrado este mes</span><span class="metric-val green" id="m-cobrado">$0</span></div>
+      <div class="metric-row"><span class="metric-label">Por cobrar</span><span class="metric-val yellow" id="m-porcobrar">$0</span></div>
+    </div>
+    <div class="metric-card" style="animation-delay:0.2s">
+      <div class="metric-section">📤 Gastos del mes</div>
+      <div class="metric-row"><span class="metric-label">Variables pagados</span><span class="metric-val red" id="m-gv-pagados">$0</span></div>
+      <div class="metric-row"><span class="metric-label">Fijos del mes</span><span class="metric-val red" id="m-gf-mes">$0</span></div>
+      <div class="metric-row"><span class="metric-label">Gasto casa</span><span class="metric-val orange" id="m-gcasa">$0</span></div>
+      <div class="metric-row"><span class="metric-label">Por pagar proveedores</span><span class="metric-val yellow" id="m-porpagar">$0</span></div>
+    </div>
+    <div class="metric-card" style="animation-delay:0.25s">
+      <div class="metric-section">📊 Leads y conversión</div>
+      <div class="metric-row"><span class="metric-label">Leads este mes</span><span class="metric-val accent" id="m-leads-total">0</span></div>
+      <div class="metric-row"><span class="metric-label">Llamadas</span><span class="metric-val accent" id="m-leads-llamada">0</span></div>
+      <div class="metric-row"><span class="metric-label">WhatsApp</span><span class="metric-val accent" id="m-leads-wa">0</span></div>
+      <div class="metric-row"><span class="metric-label">Cerrados</span><span class="metric-val green" id="m-cerrados">0</span></div>
+      <div class="metric-row"><span class="metric-label">Hit rate</span><span class="metric-val green" id="m-hitrate">0%</span></div>
+      <div class="metric-row"><span class="metric-label">Costo por lead</span><span class="metric-val yellow" id="m-cpl">$0</span></div>
+    </div>
+  </div>
+
+  <div class="metric-card" style="animation-delay:0.3s">
+    <div class="metric-section">📈 Margen real del mes</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:12px; text-align:center; padding:8px 0;">
+      <div>
+        <div style="font-family:'Syne',sans-serif; font-size:18px; font-weight:700;" class="green" id="m-ingresos-reales">$0</div>
+        <div style="font-size:10px; color:var(--muted); margin-top:3px;">Ingresos cobrados</div>
+      </div>
+      <div>
+        <div style="font-family:'Syne',sans-serif; font-size:18px; font-weight:700;" class="red" id="m-gastos-totales">$0</div>
+        <div style="font-size:10px; color:var(--muted); margin-top:3px;">Gastos totales</div>
+      </div>
+      <div>
+        <div style="font-family:'Syne',sans-serif; font-size:18px; font-weight:700;" id="m-utilidad">$0</div>
+        <div style="font-size:10px; color:var(--muted); margin-top:3px;">Utilidad real</div>
+      </div>
+      <div>
+        <div style="font-family:'Syne',sans-serif; font-size:22px; font-weight:800;" id="m-margen-pct">0%</div>
+        <div style="font-size:10px; color:var(--muted); margin-top:3px;">% Margen</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="page" id="page-leads">
+  <div class="table-container">
+    <div class="table-header">
+      <div class="table-title">Leads</div>
+      <button class="btn-add" onclick="openModal('lead')">+ Agregar</button>
+    </div>
+    <table>
+      <thead><tr>
+        <th>Fecha</th><th>Nombre</th><th>Canal</th><th>Producto</th><th>Status</th><th>Cotización</th>
+      </tr></thead>
+      <tbody id="leads-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="page" id="page-ventas">
+  <div class="table-container">
+    <div class="table-header">
+      <div class="table-title">Ventas</div>
+      <button class="btn-add" onclick="openModal('venta')">+ Agregar</button>
+    </div>
+    <table>
+      <thead><tr>
+        <th>Fecha</th><th>Cliente</th><th>Producto</th><th>Monto</th><th>Factura</th><th>Status</th>
+      </tr></thead>
+      <tbody id="ventas-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="page" id="page-pagos">
+  <div class="table-container">
+    <div class="table-header">
+      <div class="table-title">Pagos Recibidos</div>
+      <button class="btn-add" onclick="openModal('pago')">+ Agregar</button>
+    </div>
+    <table>
+      <thead><tr>
+        <th>Fecha</th><th>Cliente</th><th>Tipo</th><th>Monto</th><th>Forma de Pago</th>
+      </tr></thead>
+      <tbody id="pagos-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="page" id="page-gastos">
+  <div class="table-container">
+    <div class="table-header">
+      <div class="table-title">Gastos Variables</div>
+      <button class="btn-add" onclick="openModal('gasto')">+ Agregar</button>
+    </div>
+    <table>
+      <thead><tr>
+        <th>Fecha</th><th>Categoría</th><th>Proveedor</th><th>Monto</th><th>IVA</th><th>Status</th>
+      </tr></thead>
+      <tbody id="gastos-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="page" id="page-fijos">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+    <div style="font-family:'Syne',sans-serif; font-size:15px; font-weight:700;">Gastos Fijos del Negocio</div>
+    <div style="font-size:11px; color:var(--muted);">Mes actual</div>
+  </div>
+  <div class="gf-grid">
+    <div class="gf-row header">
+      <div>Concepto</div>
+      <div style="text-align:right">Presup. mes</div>
+      <div style="text-align:right">Real capturado</div>
+      <div style="text-align:right">Diferencia</div>
+    </div>
+  </div>
+  <div id="gf-rows" class="gf-grid" style="margin-top:6px;"></div>
+  <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px 16px; margin-top:8px; display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:8px; align-items:center;">
+    <div style="font-family:'Syne',sans-serif; font-weight:700; font-size:13px;">TOTAL FIJOS</div>
+    <div style="text-align:right; font-weight:700; color:var(--accent); font-size:13px;" id="total-presup">$0</div>
+    <div style="text-align:right; font-weight:700; color:var(--red); font-size:13px;" id="total-real">$0</div>
+    <div style="text-align:right; font-weight:700; font-size:13px;" id="total-diff">$0</div>
+  </div>
+
+  <div style="margin-top:20px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px;">
+    <div style="font-family:'Syne',sans-serif; font-size:13px; font-weight:700; margin-bottom:12px; color:var(--orange);">🏠 Gasto Casa del Mes (automático)</div>
+    <div style="display:flex; align-items:center; gap:12px;">
+      <span style="color:var(--muted); font-size:12px; flex:1;">Total gastos casa este mes (calculado de tu presupuesto):</span>
+      <span id="gasto-casa-display" style="font-family:'Syne',sans-serif; font-size:16px; font-weight:700; color:var(--orange);">$0</span>
+    </div>
+    <div style="margin-top:10px; font-size:11px; color:var(--muted);">Los conceptos de casa (renta, colegiatura, comida, etc.) se cargan automáticamente de tu presupuesto anual.</div>
+  </div>
+
+  <div style="margin-top:14px; background:var(--surface); border:1px solid var(--accent); border-radius:var(--radius); padding:16px;">
+    <div style="font-family:'Syne',sans-serif; font-size:13px; font-weight:700; margin-bottom:12px;">🎯 Punto de Equilibrio</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+      <div style="background:var(--surface2); border-radius:10px; padding:12px; text-align:center;">
+        <div style="font-size:10px; color:var(--muted); margin-bottom:4px; text-transform:uppercase; letter-spacing:0.8px;">Margen estimado</div>
+        <div style="display:flex; align-items:center; justify-content:center; gap:4px;">
+          <input type="number" id="margen-input" value="30" min="1" max="99" style="background:transparent; border:none; color:var(--yellow); font-family:'Syne',sans-serif; font-size:22px; font-weight:800; width:50px; text-align:right; outline:none;" oninput="updateAll()">
+          <span style="font-family:'Syne',sans-serif; font-size:22px; font-weight:800; color:var(--yellow);">%</span>
+        </div>
+      </div>
+      <div style="background:var(--surface2); border-radius:10px; padding:12px; text-align:center;">
+        <div style="font-size:10px; color:var(--muted); margin-bottom:4px; text-transform:uppercase; letter-spacing:0.8px;">Debes vender</div>
+        <div style="font-family:'Syne',sans-serif; font-size:18px; font-weight:800; color:var(--green);" id="pe-meta">$0</div>
+        <div style="font-size:10px; color:var(--muted);">al mes</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-lead">
+  <div class="modal">
+    <div class="modal-title">Nuevo Lead</div>
+    <div class="form-group"><label class="form-label">Nombre</label><input class="form-input" id="lead-nombre" placeholder="Nombre del prospecto"></div>
+    <div class="form-group"><label class="form-label">Teléfono</label><input class="form-input" id="lead-tel" placeholder="442..."></div>
+    <div class="form-group"><label class="form-label">Canal</label>
+      <select class="form-select" id="lead-canal">
+        <option>Llamada</option><option>WhatsApp</option><option>Referido</option><option>Otro</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Producto interesado</label><input class="form-input" id="lead-producto" placeholder="Ej: Persianas blackout sala"></div>
+    <div class="form-group"><label class="form-label">Status</label>
+      <select class="form-select" id="lead-status">
+        <option>Nuevo</option><option>Cotizado</option><option>Cerrado</option><option>Perdido</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Cotización ($)</label><input class="form-input" type="number" id="lead-cotizacion" placeholder="0"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('lead')">Cancelar</button>
+      <button class="btn-save" onclick="saveLead()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-venta">
+  <div class="modal">
+    <div class="modal-title">Nueva Venta</div>
+    <div class="form-group"><label class="form-label">Cliente</label><input class="form-input" id="venta-cliente" placeholder="Nombre del cliente"></div>
+    <div class="form-group"><label class="form-label">Producto</label><input class="form-input" id="venta-producto" placeholder="Descripción"></div>
+    <div class="form-group"><label class="form-label">Monto total ($)</label><input class="form-input" type="number" id="venta-monto" placeholder="0"></div>
+    <div class="form-group"><label class="form-label">¿Requiere factura?</label>
+      <select class="form-select" id="venta-factura"><option>No</option><option>Si</option></select>
+    </div>
+    <div class="form-group"><label class="form-label">Status pago</label>
+      <select class="form-select" id="venta-status"><option>Con anticipo</option><option>Pagado</option><option>Por cobrar</option></select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('venta')">Cancelar</button>
+      <button class="btn-save" onclick="saveVenta()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-pago">
+  <div class="modal">
+    <div class="modal-title">Pago Recibido</div>
+    <div class="form-group"><label class="form-label">Cliente</label><input class="form-input" id="pago-cliente" placeholder="Nombre del cliente"></div>
+    <div class="form-group"><label class="form-label">Tipo</label>
+      <select class="form-select" id="pago-tipo"><option>Anticipo</option><option>Liquidación</option></select>
+    </div>
+    <div class="form-group"><label class="form-label">Monto ($)</label><input class="form-input" type="number" id="pago-monto" placeholder="0"></div>
+    <div class="form-group"><label class="form-label">Forma de pago</label>
+      <select class="form-select" id="pago-forma"><option>Transferencia</option><option>Efectivo</option><option>Tarjeta</option></select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('pago')">Cancelar</button>
+      <button class="btn-save" onclick="savePago()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-gasto">
+  <div class="modal">
+    <div class="modal-title">Nuevo Gasto</div>
+    <div class="form-group"><label class="form-label">Categoría</label>
+      <select class="form-select" id="gasto-cat">
+        <option>Material</option><option>Mano de Obra</option><option>Fijo</option><option>Otro</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Proveedor</label><input class="form-input" id="gasto-prov" placeholder="Nombre del proveedor"></div>
+    <div class="form-group"><label class="form-label">Descripción</label><input class="form-input" id="gasto-desc" placeholder="¿Qué se compró?"></div>
+    <div class="form-group"><label class="form-label">Monto ($)</label><input class="form-input" type="number" id="gasto-monto" placeholder="0"></div>
+    <div class="form-group"><label class="form-label">¿Tiene IVA?</label>
+      <select class="form-select" id="gasto-iva"><option>No</option><option>Si</option></select>
+    </div>
+    <div class="form-group"><label class="form-label">Status</label>
+      <select class="form-select" id="gasto-status"><option>Pagado</option><option>Por pagar</option></select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('gasto')">Cancelar</button>
+      <button class="btn-save" onclick="saveGasto()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── DATA ──
+let data = {
+  leads: [],
+  ventas: [],
+  pagos: [],
+  gastos: [],
+  gastosFijos: [
+    // RENTA
+    { concepto:'Renta Bodega 1', cat:'Renta', iva:true,  montos:[12180,12180,12180,12180,12180,12180,12180,12180,12180,12180,12180,12180] },
+    { concepto:'Renta Bodega 2', cat:'Renta', iva:false, montos:[27000,27000,27000,27000,27000,27000,27000,27000,27000,27000,27000,27000] },
+    // SERVICIOS
+    { concepto:'Luz',            cat:'Servicios', iva:true,  montos:[2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000] },
+    { concepto:'Agua',           cat:'Servicios', iva:true,  montos:[900,900,900,900,900,900,900,900,900,900,900,900] },
+    { concepto:'Internet',       cat:'Servicios', iva:true,  montos:[750,750,750,750,750,750,750,750,750,750,750,750] },
+    { concepto:'Limpieza',       cat:'Servicios', iva:false, montos:[1200,1200,1200,1200,1200,1200,1200,1200,1200,12
