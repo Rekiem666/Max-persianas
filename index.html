@@ -587,7 +587,6 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   <div class="tab" onclick="showTab('fijos')">Gastos Fijos</div>
 </div>
 
-
 <div class="page" id="page-max">
   <div class="chat-wrap">
     <div class="chat-messages" id="chat-messages">
@@ -801,8 +800,177 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   </div>
 </div>
 
+<div class="modal-overlay" id="modal-lead">
+  <div class="modal">
+    <div class="modal-title">Nuevo Lead</div>
+    <div class="form-group"><label class="form-label">Nombre</label><input class="form-input" id="lead-nombre" placeholder="Nombre del prospecto"></div>
+    <div class="form-group"><label class="form-label">Teléfono</label><input class="form-input" id="lead-tel" placeholder="442..."></div>
+    <div class="form-group"><label class="form-label">Canal</label>
+      <select class="form-select" id="lead-canal">
+        <option>Llamada</option><option>WhatsApp</option><option>Referido</option><option>Otro</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Producto interesado</label><input class="form-input" id="lead-producto" placeholder="Ej: Persianas blackout sala"></div>
+    <div class="form-group"><label class="form-label">Status</label>
+      <select class="form-select" id="lead-status">
+        <option>Nuevo</option><option>Cotizado</option><option>Cerrado</option><option>Perdido</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Cotización ($)</label><input class="form-input" type="number" id="lead-cotizacion" placeholder="0"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('lead')">Cancelar</button>
+      <button class="btn-save" onclick="saveLead()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-venta">
+  <div class="modal">
+    <div class="modal-title">Nueva Venta</div>
+    <div class="form-group"><label class="form-label">Cliente</label><input class="form-input" id="venta-cliente" placeholder="Nombre del cliente"></div>
+    <div class="form-group"><label class="form-label">Producto</label><input class="form-input" id="venta-producto" placeholder="Descripción"></div>
+    <div class="form-group"><label class="form-label">Monto total ($)</label><input class="form-input" type="number" id="venta-monto" placeholder="0"></div>
+    <div class="form-group"><label class="form-label">¿Requiere factura?</label>
+      <select class="form-select" id="venta-factura"><option>No</option><option>Si</option></select>
+    </div>
+    <div class="form-group"><label class="form-label">Status pago</label>
+      <select class="form-select" id="venta-status"><option>Con anticipo</option><option>Pagado</option><option>Por cobrar</option></select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('venta')">Cancelar</button>
+      <button class="btn-save" onclick="saveVenta()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-pago">
+  <div class="modal">
+    <div class="modal-title">Pago Recibido</div>
+    <div class="form-group"><label class="form-label">Cliente</label><input class="form-input" id="pago-cliente" placeholder="Nombre del cliente"></div>
+    <div class="form-group"><label class="form-label">Tipo</label>
+      <select class="form-select" id="pago-tipo"><option>Anticipo</option><option>Liquidación</option></select>
+    </div>
+    <div class="form-group"><label class="form-label">Monto ($)</label><input class="form-input" type="number" id="pago-monto" placeholder="0"></div>
+    <div class="form-group"><label class="form-label">Forma de pago</label>
+      <select class="form-select" id="pago-forma"><option>Transferencia</option><option>Efectivo</option><option>Tarjeta</option></select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('pago')">Cancelar</button>
+      <button class="btn-save" onclick="savePago()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-gasto">
+  <div class="modal">
+    <div class="modal-title">Nuevo Gasto</div>
+    <div class="form-group"><label class="form-label">Categoría</label>
+      <select class="form-select" id="gasto-cat">
+        <option>Material</option><option>Mano de Obra</option><option>Fijo</option><option>Otro</option>
+      </select>
+    </div>
+    <div class="form-group"><label class="form-label">Proveedor</label><input class="form-input" id="gasto-prov" placeholder="Nombre del proveedor"></div>
+    <div class="form-group"><label class="form-label">Descripción</label><input class="form-input" id="gasto-desc" placeholder="¿Qué se compró?"></div>
+    <div class="form-group"><label class="form-label">Monto ($)</label><input class="form-input" type="number" id="gasto-monto" placeholder="0"></div>
+    <div class="form-group"><label class="form-label">¿Tiene IVA?</label>
+      <select class="form-select" id="gasto-iva"><option>No</option><option>Si</option></select>
+    </div>
+    <div class="form-group"><label class="form-label">Status</label>
+      <select class="form-select" id="gasto-status"><option>Pagado</option><option>Por pagar</option></select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal('gasto')">Cancelar</button>
+      <button class="btn-save" onclick="saveGasto()">Guardar</button>
+    </div>
+  </div>
+</div>
+
 <script>
-// ── DATA AND UTILS OMITTED FOR BREVITY ──
+// ── DATA ──
+let data = {
+  leads: [],
+  ventas: [],
+  pagos: [],
+  gastos: [],
+  gastosFijos: [
+    { concepto:'Renta Bodega 1', cat:'Renta', iva:true,  montos:[12180,12180,12180,12180,12180,12180,12180,12180,12180,12180,12180,12180] },
+    { concepto:'Renta Bodega 2', cat:'Renta', iva:false, montos:[27000,27000,27000,27000,27000,27000,27000,27000,27000,27000,27000,27000] },
+    { concepto:'Luz', cat:'Servicios', iva:true,  montos:[2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000] },
+    { concepto:'Agua', cat:'Servicios', iva:true,  montos:[900,900,900,900,900,900,900,900,900,900,900,900] },
+    { concepto:'Internet', cat:'Servicios', iva:true,  montos:[750,750,750,750,750,750,750,750,750,750,750,750] },
+    { concepto:'Limpieza', cat:'Servicios', iva:false, montos:[1200,1200,1200,1200,1200,1200,1200,1200,1200,1200,1200,1200] },
+    { concepto:'IMSS', cat:'Nómina', iva:false, montos:[10000,10000,10000,10000,10000,10000,10000,10000,10000,10000,10000,10000] },
+    { concepto:'Nóminas', cat:'Nómina', iva:false, montos:[50000,50000,50000,50000,50000,50000,50000,50000,50000,50000,50000,50000] },
+    { concepto:'Aguinaldo', cat:'Nómina', iva:false, montos:[0,0,0,0,0,0,0,0,0,0,12500,12500] },
+    { concepto:'Gasolina', cat:'Operativo', iva:true,  montos:[10000,10000,10000,10000,10000,10000,10000,10000,10000,10000,10000,10000] },
+    { concepto:'Seguro Mazda', cat:'Seguros', iva:true, montos:[0,2341.87,0,0,2341.87,0,0,2341,0,0,2341,0] },
+    { concepto:'Seguro Passat', cat:'Seguros', iva:true, montos:[0,0,4078.35,0,0,0,0,0,4078.35,0,0,0] },
+    { concepto:'Seguro Urvan', cat:'Seguros', iva:true, montos:[0,2560.07,0,0,2560.07,0,0,2560.07,0,0,2560.07,0] },
+    { concepto:'Cámaras', cat:'Suscripciones', iva:false, montos:[400,400,400,400,400,400,400,400,400,400,400,400] },
+    { concepto:'Adobe', cat:'Suscripciones', iva:false, montos:[400,400,400,400,400,400,400,400,400,400,400,400] },
+    { concepto:'Microsoft', cat:'Suscripciones', iva:false, montos:[250,250,250,250,250,250,250,250,250,250,250,250] },
+    { concepto:'IAS (IA/Google/ChatGPT)', cat:'Suscripciones', iva:false, montos:[1200,1200,1200,1200,1200,1200,1200,1200,1200,1200,1200,1200] },
+    { concepto:'Dominio Bali', cat:'Digital', iva:false, montos:[0,0,0,0,0,1300,0,0,0,0,0,0] },
+    { concepto:'Dominio Recomendando', cat:'Digital', iva:false, montos:[0,0,0,0,0,0,0,1300,0,0,0,0] },
+    { concepto:'Dominio RH360', cat:'Digital', iva:false, montos:[0,0,1300,0,0,0,0,0,0,0,0,0] },
+    { concepto:'Dominio WEBBOSS', cat:'Digital', iva:false, montos:[0,0,0,1300,0,0,0,0,0,0,0,0] },
+    { concepto:'Dominio Easyxmas MX', cat:'Digital', iva:false, montos:[0,0,0,0,0,0,0,0,1300,0,0,0] },
+    { concepto:'Dominio Easyxmas COM.MX', cat:'Digital', iva:false, montos:[0,0,0,0,0,0,0,0,750,0,0,0] },
+    { concepto:'Correo info Libali', cat:'Digital', iva:false, montos:[0,0,1200,0,0,0,0,0,0,0,0,0] },
+    { concepto:'Correo info Recomendando', cat:'Digital', iva:false, montos:[0,0,1200,0,0,0,0,0,0,0,0,0] },
+    { concepto:'Correo info RH360', cat:'Digital', iva:false, montos:[0,0,1200,0,0,0,0,0,0,0,0,0] },
+    { concepto:'Correo admin Easyxmas', cat:'Digital', iva:false, montos:[0,0,0,0,0,2000,0,0,0,0,0,0] },
+    { concepto:'Correo facturación Easyxmas',cat:'Digital',iva:false, montos:[0,0,0,0,0,0,0,2000,0,0,0,0] },
+    { concepto:'Correo info Easyxmas', cat:'Digital', iva:false, montos:[0,0,0,0,0,0,0,0,0,0,2000,0] },
+    { concepto:'Correo Morlet Easyxmas', cat:'Digital', iva:false, montos:[0,0,0,0,0,0,0,0,0,0,2000,0] },
+    { concepto:'Hosting global', cat:'Digital', iva:false, montos:[0,1200,0,0,1200,0,0,1200,0,0,1200,0] },
+    { concepto:'Google Ads', cat:'Marketing', iva:false, montos:[20000,20000,20000,20000,20000,20000,20000,20000,20000,20000,20000,20000] },
+  ],
+  gastosCasa: [
+    { concepto:'Renta casa', montos:[17000,17000,17000,17000,17000,17000,17000,17000,17000,17000,17000,17000] },
+    { concepto:'GMM', montos:[0,0,32500,0,0,32500,0,0,32500,0,0,32500] },
+    { concepto:'Colegiatura', montos:[17000,17000,17000,17000,17000,0,0,17000,17000,17000,17000,17000] },
+    { concepto:'Luz casa', montos:[900,900,900,900,900,900,900,900,900,900,900,900] },
+    { concepto:'Agua casa', montos:[900,900,900,900,900,900,900,900,900,900,900,900] },
+    { concepto:'Gas casa', montos:[2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000] },
+    { concepto:'Internet casa', montos:[600,600,600,600,600,600,600,600,600,600,600,600] },
+    { concepto:'Limpieza casa', montos:[5000,5000,5000,5000,5000,5000,5000,5000,5000,5000,5000,5000] },
+    { concepto:'Comida', montos:[12000,12000,12000,12000,12000,12000,12000,12000,12000,12000,12000,12000] },
+    { concepto:'Netflix', montos:[250,250,250,250,250,250,250,250,250,250,250,250] },
+    { concepto:'Prime', montos:[0,0,0,0,0,0,0,0,0,0,0,1000] },
+    { concepto:'Disney+', montos:[120,120,120,120,120,120,120,120,120,120,120,120] },
+    { concepto:'Spotify', montos:[250,250,250,250,250,250,250,250,250,250,250,250] },
+    { concepto:'Préstamo', montos:[11500,11500,11500,11500,11500,11500,11500,11500,11500,11500,11500,11500] },
+    { concepto:'Medicinas', montos:[10000,10000,10000,10000,10000,10000,10000,10000,10000,10000,10000,10000] },
+    { concepto:'Ale', montos:[6000,6000,6000,6000,6000,6000,6000,6000,6000,6000,6000,6000] },
+    { concepto:'Terreno', montos:[3000,3000,3000,3000,3000,3000,3000,3000,3000,3000,3000,3000] },
+  ],
+  gastoCasa: 0,
+  margen: 30
+};
+
+// ── UTILS ──
+function fmt(n) { return new Intl.NumberFormat('es-MX', {style:'currency',currency:'MXN',minimumFractionDigits:0}).format(n||0); }
+function today() { return new Date().toISOString().split('T')[0]; }
+function mesActual(fechaStr) {
+  if(!fechaStr) return false;
+  const d = new Date(fechaStr+'T12:00:00');
+  const now = new Date();
+  return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+}
+function diasHabilesRestantes() {
+  const now = new Date();
+  const fin = new Date(now.getFullYear(), now.getMonth()+1, 0);
+  let dias = 0;
+  const cur = new Date(now);
+  cur.setDate(cur.getDate()+1);
+  while(cur <= fin) {
+    const dow = cur.getDay();
+    if(dow !== 0) dias++;
+    cur.setDate(cur.getDate()+1);
+  }
+  return dias;
+}
 
 // ── MAX CHAT CONFIG ──
 const APPS_URL = 'https://script.google.com/macros/s/AKfycbwuIve9aXgpEA71czKwKgZON6lodL0DBUdbLR4-9ola5yUpSAR328eS4HlqYngXBiPm_Q/exec';
@@ -810,25 +978,224 @@ const APPS_URL = 'https://script.google.com/macros/s/AKfycbwuIve9aXgpEA71czKwKgZ
 const MAX_SYSTEM = `Eres MAX, el asistente financiero de una empresa de persianas en México (Brum Morlet).
 Tu trabajo es interpretar mensajes en lenguaje natural y extraer datos estructurados.
 FECHA: Siempre usa la fecha de hoy salvo que el usuario especifique claramente otra.
-RESPONDE SIEMPRE en JSON.`;
+RESPONDE SIEMPRE en JSON con este formato exacto:
+{
+  "tipo": "LEAD|VENTA|PAGO|GASTO_FIJO|GASTO_VARIABLE|PREGUNTA|DESCONOCIDO",
+  "datos": { ...campos según tipo },
+  "confirmacion": "Texto breve confirmando lo que entendiste, en español informal",
+  "pregunta": "Solo si falta UN dato crítico para guardar el registro"
+}
+Para LEAD: { nombre, canal, producto, cotizacion, notas }
+Para VENTA: { cliente, producto, monto, factura(Si/No), status }
+Para PAGO: { cliente, monto, tipo, forma }
+Para GASTO_FIJO: { categoria, descripcion, monto, iva(Si/No), status }
+Para GASTO_VARIABLE: { descripcion, monto, iva(Si/No), proveedor, status }`;
 
-// ── REMAINDER OF SCRIPT OMITTED FOR BREVITY ──
+function showTab(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  const targetPage = document.getElementById('page-' + id);
+  if (targetPage) targetPage.classList.add('active');
+  const tab = Array.from(document.querySelectorAll('.tab')).find(t => t.getAttribute('onclick').includes(id));
+  if (tab) tab.classList.add('active');
+  renderAll();
+}
 
+async function loadFromSheets() {
+  try {
+    const res = await fetch(APPS_URL + '?action=getData');
+    const json = await res.json();
+    if(json.ok && json.data) {
+      const d = json.data;
+      if(d.LEADS) data.leads = d.LEADS.map(r => ({
+        fecha: r.Fecha, nombre: r.Nombre, tel: r['Teléfono']||'',
+        canal: r.Canal, producto: r.Producto, status: r.Status,
+        cotizacion: parseFloat(r['Cotización'])||0
+      }));
+      if(d.VENTAS) data.ventas = d.VENTAS.map(r => ({
+        fecha: r.Fecha, cliente: r.Cliente, producto: r.Producto,
+        monto: parseFloat(r.Monto)||0, factura: r.Factura, status: r.Status
+      }));
+      if(d.PAGOS) data.pagos = d.PAGOS.map(r => ({
+        fecha: r.Fecha, cliente: r.Cliente, tipo: r.Tipo,
+        monto: parseFloat(r.Monto)||0, forma: r.Forma
+      }));
+      if(d.GASTOS) data.gastos = d.GASTOS.map(r => ({
+        fecha: r.Fecha, cat: r['Categoría']||r.Tipo, prov: r.Proveedor||'',
+        desc: r['Descripción'], monto: parseFloat(r.Monto)||0,
+        iva: r.IVA, status: r.Status
+      }));
+      renderAll();
+      updateAll();
+    }
+  } catch(e) {
+    console.error('Error cargando datos de Sheets:', e);
+  }
+}
+
+// ── RENDER TABLES ──
+function renderLeads() {
+  const tb = document.getElementById('leads-tbody');
+  if (!tb) return;
+  tb.innerHTML = data.leads.map(l => `<tr>
+    <td>${l.fecha}</td><td><strong>${l.nombre}</strong><br><small style="color:var(--muted)">${l.tel}</small></td>
+    <td>${l.canal}</td><td style="color:var(--muted)">${l.producto}</td>
+    <td><span class="badge badge-${l.status.toLowerCase()}">${l.status}</span></td>
+    <td>${l.cotizacion?fmt(l.cotizacion):'—'}</td>
+  </tr>`).join('');
+}
+function renderVentas() {
+  const tb = document.getElementById('ventas-tbody');
+  if (!tb) return;
+  tb.innerHTML = data.ventas.map(v => `<tr>
+    <td>${v.fecha}</td><td><strong>${v.cliente}</strong></td>
+    <td style="color:var(--muted)">${v.producto}</td>
+    <td style="color:var(--green); font-weight:600">${fmt(v.monto)}</td>
+    <td>${v.factura==='Si'?'<span class="badge badge-cerrado">Sí</span>':'<span class="badge badge-perdido">No</span>'}</td>
+    <td><span class="badge badge-${v.status==='Pagado'?'pagado':'cotizado'}">${v.status}</span></td>
+  </tr>`).join('');
+}
+function renderPagos() {
+  const tb = document.getElementById('pagos-tbody');
+  if (!tb) return;
+  tb.innerHTML = data.pagos.map(p => `<tr>
+    <td>${p.fecha}</td><td><strong>${p.cliente}</strong></td>
+    <td><span class="badge badge-${p.tipo==='Liquidación'?'cerrado':'cotizado'}">${p.tipo}</span></td>
+    <td style="color:var(--green); font-weight:600">${fmt(p.monto)}</td>
+    <td>${p.forma}</td>
+  </tr>`).join('');
+}
+function renderGastos() {
+  const tb = document.getElementById('gastos-tbody');
+  if (!tb) return;
+  tb.innerHTML = data.gastos.map(g => `<tr>
+    <td>${g.fecha}</td>
+    <td><span class="badge badge-${g.cat==='Material'?'cotizado':g.cat==='Mano de Obra'?'nuevo':'perdido'}">${g.cat}</span></td>
+    <td><strong>${g.prov}</strong><br><small style="color:var(--muted)">${g.desc}</small></td>
+    <td style="color:var(--red); font-weight:600">${fmt(g.monto)}</td>
+    <td>${g.iva==='Si'?'<span class="badge badge-cotizado">Con IVA</span>':'—'}</td>
+    <td><span class="badge badge-${g.status==='Pagado'?'pagado':'porpagar'}">${g.status}</span></td>
+  </tr>`).join('');
+}
+
+function renderGastosFijos() {
+  const container = document.getElementById('gf-rows');
+  if (!container) return;
+  const m = new Date().getMonth();
+  let lastCat = '';
+  let html = '';
+  data.gastosFijos.forEach((gf, i) => {
+    const presup = gf.montos ? (gf.montos[m]||0) : 0;
+    const real = gf.real || 0;
+    const ivaTag = gf.iva ? '<span style="font-size:9px;background:rgba(124,107,255,0.2);color:var(--accent);padding:2px 5px;border-radius:4px;margin-left:6px;">IVA</span>' : '';
+    if(gf.cat !== lastCat) {
+      html += `<div style="grid-column:1/-1;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);padding:10px 0 2px;">${gf.cat}</div>`;
+      lastCat = gf.cat;
+    }
+    html += `<div class="gf-row">
+      <div><span class="gf-concepto">${gf.concepto}</span>${ivaTag}</div>
+      <div style="text-align:right;font-size:12px;color:var(--muted);">${presup ? fmt(presup) : '—'}</div>
+      <input type="number" class="input-blue" style="border-color:rgba(255,80,80,0.3); color:#ff9999;" value="${real||''}" placeholder="0"
+        oninput="data.gastosFijos[${i}].real=parseFloat(this.value)||0; updateAll()">
+      <div id="diff-${i}"></div>
+    </div>`;
+  });
+  container.innerHTML = html;
+  const margenInput = document.getElementById('margen-input');
+  if(margenInput) margenInput.value = data.margen || 30;
+}
+
+function renderAll() {
+  renderLeads(); renderVentas(); renderPagos(); renderGastos(); renderGastosFijos();
+}
+
+function updateAll() {
+  const mesLeads = data.leads.filter(l => mesActual(l.fecha));
+  const mesVentas = data.ventas.filter(v => mesActual(v.fecha));
+  const mesPagos = data.pagos.filter(p => mesActual(p.fecha));
+  const mesGastos = data.gastos.filter(g => mesActual(g.fecha));
+
+  const totalVentas = mesVentas.reduce((s,v)=>s+v.monto,0);
+  const ventasFactura = mesVentas.filter(v=>v.factura==='Si').reduce((s,v)=>s+v.monto,0);
+  const ventasNoFactura = mesVentas.filter(v=>v.factura==='No').reduce((s,v)=>s+v.monto,0);
+  const ivaVentas = ventasFactura * 0.16;
+
+  const cobrado = mesPagos.reduce((s,p)=>s+p.monto,0);
+  const porCobrar = Math.max(data.ventas.reduce((s,v)=>s+v.monto,0) - data.pagos.reduce((s,p)=>s+p.monto,0), 0);
+
+  const gvPagados = mesGastos.filter(g=>g.status==='Pagado').reduce((s,g)=>s+g.monto,0);
+  const porPagar = data.gastos.filter(g=>g.status==='Por pagar').reduce((s,g)=>s+g.monto,0);
+
+  const m = new Date().getMonth();
+  const margenVal = parseFloat(document.getElementById('margen-input')?.value)||30;
+  data.margen = margenVal;
+
+  const totalPresup = data.gastosFijos.reduce((s,g)=>s+(g.montos?g.montos[m]:0),0);
+  const totalReal = data.gastosFijos.reduce((s,g)=>s+(g.real > 0 ? g.real : (g.montos?g.montos[m]:0)),0);
+  const totalDiff = totalPresup - totalReal;
+  const casaVal = data.gastosCasa.reduce((s,g)=>s+(g.montos?g.montos[m]:0),0);
+
+  const set = (id, val) => { const el=document.getElementById(id); if(el) el.textContent=val; };
+  set('m-ventas-total', fmt(totalVentas));
+  set('m-ventas-factura', fmt(ventasFactura));
+  set('m-ventas-nofactura', fmt(ventasNoFactura));
+  set('m-iva-cobrado', fmt(ivaVentas));
+  set('m-cobrado', fmt(cobrado));
+  set('m-porcobrar', fmt(porCobrar));
+  set('m-gv-pagados', fmt(gvPagados));
+  set('m-gf-mes', fmt(totalReal));
+  set('m-gcasa', fmt(casaVal));
+  set('m-porpagar', fmt(porPagar));
+
+  if(document.getElementById('total-presup')) {
+    set('total-presup', fmt(totalPresup));
+    set('total-real', fmt(totalReal));
+    const diffEl = document.getElementById('total-diff');
+    diffEl.textContent = fmt(Math.abs(totalDiff));
+    diffEl.style.color = totalDiff >= 0 ? 'var(--green)' : 'var(--red)';
+  }
+
+  const totalGastosMes = totalReal + casaVal;
+  const metaMensual = margenVal > 0 ? totalGastosMes / (margenVal/100) : 0;
+  set('pe-meta', fmt(metaMensual));
+
+  const diasRestantes = diasHabilesRestantes();
+  const faltante = Math.max(metaMensual - totalVentas, 0);
+  const necesitaHoy = diasRestantes > 0 ? faltante / diasRestantes : 0;
+  const pct = metaMensual > 0 ? Math.min((totalVentas/metaMensual)*100, 100) : 0;
+
+  set('necesitas-val', fmt(necesitaHoy));
+  set('meta-display', fmt(metaMensual));
+  set('pct-avance', pct.toFixed(0)+'%');
+  set('sem-vendido', fmt(totalVentas));
+  set('sem-faltante', fmt(faltante));
+  set('sem-dias', diasRestantes);
+
+  const fill = document.getElementById('progress-fill');
+  if(fill) {
+    fill.style.width = pct+'%';
+    fill.style.background = pct >= 100 ? 'var(--green)' : pct >= 70 ? 'var(--yellow)' : 'var(--red)';
+  }
+  const badge = document.getElementById('estado-badge');
+  if(badge) {
+    if(pct >= 100) { badge.className = 'estado-badge estado-green'; badge.textContent = '✅ META ALCANZADA'; }
+    else if(pct >= 70) { badge.className = 'estado-badge estado-yellow'; badge.textContent = '⚠️ EN CAMINO'; }
+    else { badge.className = 'estado-badge estado-red'; badge.textContent = '🔴 ATENCIÓN'; }
+  }
+}
+
+let chatHistory = [];
 async function sendMessage() {
   const input = document.getElementById('chat-input');
   const sendBtn = document.getElementById('chat-send');
   const text = input.value.trim();
   if(!text) return;
-
   input.value = '';
   input.style.height = 'auto';
   sendBtn.disabled = true;
-
   addMessage('user', text);
   chatHistory.push({ role: 'user', content: text });
-
   showTyping();
-
   try {
     const res = await fetch('/.netlify/functions/claude', {
       method: 'POST',
@@ -840,25 +1207,46 @@ async function sendMessage() {
         messages: chatHistory
       })
     });
-
     const json = await res.json();
-    if(!json || !json.content || !json.content[0]) {
-      hideTyping();
-      addMessage('max', 'Error respuesta: ' + JSON.stringify(json));
-      sendBtn.disabled = false;
-      return;
-    }
-    const raw = json.content[0].text;
     hideTyping();
-
-    // PARSING AND SAVING LOGIC OMITTED FOR BREVITY
+    if(!json || !json.content) { addMessage('max', 'Error respuesta IA.'); return; }
+    const raw = json.content[0].text;
+    const parsed = JSON.parse(raw.replace(/```json|```/g, '').trim());
+    addMessage('max', parsed.confirmacion);
+    chatHistory.push({ role: 'assistant', content: raw });
   } catch(err) {
     hideTyping();
     addMessage('max', 'Error conectando con la IA.');
-    console.error(err);
   }
   sendBtn.disabled = false;
 }
+
+function addMessage(role, text) {
+  const msgs = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'msg ' + (role === 'user' ? 'user' : 'max');
+  div.innerHTML = `<div class="msg-avatar">${role==='user'?'T':'M'}</div><div class="msg-bubble">${text}</div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function showTyping() {
+  const msgs = document.getElementById('chat-messages');
+  const div = document.createElement('div');
+  div.className = 'msg max'; div.id = 'typing-indicator';
+  div.innerHTML = '<div class="msg-avatar">M</div><div class="typing"><span></span><span></span><span></span></div>';
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+function hideTyping() { const el = document.getElementById('typing-indicator'); if(el) el.remove(); }
+
+window.addEventListener('load', () => {
+  const hoy = new Date();
+  const diasSemana = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+  const mesesNombre = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  document.getElementById('fechaHoy').textContent = diasSemana[hoy.getDay()] + ', ' + hoy.getDate() + ' de ' + mesesNombre[hoy.getMonth()] + ' ' + hoy.getFullYear();
+  setTimeout(loadFromSheets, 500);
+});
 </script>
 </body>
 </html>
