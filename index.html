@@ -928,11 +928,66 @@ async function sendMessage() {
     });
     const json = await res.json();
     hideTyping();
-    if(json.content) {
-      const parsed = JSON.parse(json.content[0].text.replace(/```json|```/g, ''));
-      addMsg('max', parsed.confirmacion);
+    if(json.content && json.content[0]) {
+      const raw = json.content[0].text;
+      try {
+        const clean = raw.replace(/```json|```/g, '').trim();
+        const parsed = JSON.parse(clean);
+        const msg = parsed.confirmacion || parsed.pregunta || raw;
+        
+        if(parsed.tipo && parsed.tipo !== 'PREGUNTA' && parsed.tipo !== 'DESCONOCIDO' && !parsed.pregunta) {
+          // Tenemos datos completos - mostrar con botones de confirmar
+          const resumen = Object.entries(parsed.datos||{})
+            .filter(([k,v]) => v && v !== '')
+            .map(([k,v]) => `<span style="color:var(--muted)">${k}:</span> <strong>${v}</strong>`)
+            .join(' · ');
+          addMsg('max', msg + '<br><br><small style="color:var(--muted)">' + resumen + '</small>' +
+            '<div class="confirm-btns">' +
+            '<button class="confirm-btn primary" onclick="guardarDatos(' + JSON.stringify(JSON.stringify(parsed)) + ')">✓ Guardar</button>' +
+            '<button class="confirm-btn" onclick="this.parentElement.parentElement.parentElement.remove()">✗ Cancelar</button>' +
+            '</div>');
+        } else {
+          addMsg('max', msg);
+        }
+      } catch(parseErr) {
+        addMsg('max', raw);
+      }
+    } else if(json.error) {
+      addMsg('max', 'Error: ' + json.error);
+    } else {
+      addMsg('max', 'Sin respuesta: ' + JSON.stringify(json));
     }
-  } catch(e) { hideTyping(); addMsg('max', 'Error respuesta IA.'); }
+  } catch(e) { hideTyping(); addMsg('max', 'Error: ' + e.message); }
+}
+
+async function guardarDatos(parsedStr) {
+  try {
+    const parsed = JSON.parse(parsedStr);
+    const { tipo, datos } = parsed;
+    const fecha = new Date().toISOString().split('T')[0];
+    
+    const actionMap = { 'LEAD':'addLead','VENTA':'addVenta','PAGO':'addPago','GASTO_FIJO':'addGasto','GASTO_VARIABLE':'addGasto' };
+    const action = actionMap[tipo];
+    if(!action) return;
+    
+    const payload = { ...datos, fecha };
+    if(tipo === 'GASTO_FIJO') payload.tipo = 'Fijo';
+    if(tipo === 'GASTO_VARIABLE') payload.tipo = 'Variable';
+    
+    const res = await fetch(APPS_URL, {
+      method: 'POST',
+      body: JSON.stringify({ action, payload })
+    });
+    const result = await res.json();
+    
+    if(result.ok) {
+      addMsg('max', '✓ Guardado en Google Sheets');
+    } else {
+      addMsg('max', 'Error guardando: ' + JSON.stringify(result));
+    }
+  } catch(e) {
+    addMsg('max', 'Error: ' + e.message);
+  }
 }
 
 function addMsg(role, text) {
