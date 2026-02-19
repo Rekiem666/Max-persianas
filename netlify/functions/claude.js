@@ -13,10 +13,6 @@ exports.handler = async (event) => {
     };
   }
 
-  if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, body: 'Method Not Allowed' };
-  }
-
   try {
     const body = JSON.parse(event.body);
     
@@ -28,7 +24,7 @@ exports.handler = async (event) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': process.env.ANTHROPIC_API_KEY,
+          'x-api-key': process.env.ANTHROPIC_API_KEY, // <-- IMPORTANTE: Esto jala la clave de Netlify
           'anthropic-version': '2023-06-01',
           'Content-Length': Buffer.byteLength(data)
         }
@@ -40,24 +36,21 @@ exports.handler = async (event) => {
         res.on('end', () => resolve(JSON.parse(responseData)));
       });
 
-      req.on('error', reject);
+      req.on('error', (e) => reject(e));
       req.write(data);
       req.end();
     });
 
     return {
       statusCode: 200,
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
-      },
+      headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' },
       body: JSON.stringify(result)
     };
   } catch (err) {
     return {
       statusCode: 500,
       headers: { 'Access-Control-Allow-Origin': '*' },
-      body: JSON.stringify({ error: err.toString() })
+      body: JSON.stringify({ error: 'Error en la función', details: err.message })
     };
   }
 };
