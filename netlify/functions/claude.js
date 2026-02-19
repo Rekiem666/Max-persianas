@@ -1,22 +1,14 @@
 const https = require('https');
 
 exports.handler = async (event) => {
+  console.log("Petición recibida de MAX"); // Log de control
+  
   if (event.httpMethod === 'OPTIONS') {
-    return {
-      statusCode: 200,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Headers': 'Content-Type',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS'
-      },
-      body: ''
-    };
+    return { statusCode: 200, headers: { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'Content-Type' }, body: '' };
   }
 
   try {
-    const body = JSON.parse(event.body);
     const result = await new Promise((resolve, reject) => {
-      const data = JSON.stringify(body);
       const options = {
         hostname: 'api.anthropic.com',
         path: '/v1/messages',
@@ -24,17 +16,24 @@ exports.handler = async (event) => {
         headers: {
           'Content-Type': 'application/json',
           'x-api-key': process.env.ANTHROPIC_API_KEY,
-          'anthropic-version': '2023-06-01',
-          'Content-Length': Buffer.byteLength(data)
+          'anthropic-version': '2023-06-01'
         }
       };
+
       const req = https.request(options, (res) => {
         let responseData = '';
         res.on('data', (chunk) => responseData += chunk);
-        res.on('end', () => resolve(JSON.parse(responseData)));
+        res.on('end', () => {
+          console.log("Respuesta de Anthropic recibida"); // Log de control
+          resolve(JSON.parse(responseData));
+        });
       });
-      req.on('error', reject);
-      req.write(data);
+
+      req.on('error', (e) => {
+        console.error("Error en HTTPS request:", e.message); // Log de error
+        reject(e);
+      });
+      req.write(event.body);
       req.end();
     });
 
@@ -44,6 +43,7 @@ exports.handler = async (event) => {
       body: JSON.stringify(result)
     };
   } catch (err) {
+    console.error("Error capturado:", err.message); // Log de error
     return { statusCode: 500, body: JSON.stringify({ error: err.message }) };
   }
 };
