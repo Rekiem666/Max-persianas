@@ -807,10 +807,23 @@ let data = {
     { concepto:'Google Ads', cat:'Marketing', iva:false, montos:[20000,20000,20000,20000,20000,20000,20000,20000,20000,20000,20000,20000] },
   ],
   gastosCasa: [
-    { concepto:'Renta casa', montos:[17000,17000,17000,17000,17000,17000,17000,17000,17000,17000,17000,17000] },
-    { concepto:'Colegiatura', montos:[17000,17000,17000,17000,17000,0,0,17000,17000,17000,17000,17000] },
-    { concepto:'Comida', montos:[12000,12000,12000,12000,12000,12000,12000,12000,12000,12000,12000,12000] },
+    { concepto:'Renta',     montos:[17000,17000,17000,17000,17000,17000,17000,17000,17000,17000,17000,17000] },
+    { concepto:'GMM',       montos:[0,0,32500,0,0,32500,0,0,32500,0,0,32500] },
+    { concepto:'Colegiatura',montos:[17000,17000,17000,17000,17000,0,0,17000,17000,17000,17000,17000] },
+    { concepto:'Luz',       montos:[900,900,900,900,900,900,900,900,900,900,900,900] },
+    { concepto:'Agua',      montos:[900,900,900,900,900,900,900,900,900,900,900,900] },
+    { concepto:'Gas',       montos:[2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000] },
+    { concepto:'Internet',  montos:[600,600,600,600,600,600,600,600,600,600,600,600] },
+    { concepto:'Limpieza',  montos:[5000,5000,5000,5000,5000,5000,5000,5000,5000,5000,5000,5000] },
+    { concepto:'Comida',    montos:[12000,12000,12000,12000,12000,12000,12000,12000,12000,12000,12000,12000] },
+    { concepto:'Netflix',   montos:[250,250,250,250,250,250,250,250,250,250,250,250] },
+    { concepto:'Disney',    montos:[120,120,120,120,120,120,120,120,120,120,120,120] },
+    { concepto:'Spotify',   montos:[250,250,250,250,250,250,250,250,250,250,250,250] },
+    { concepto:'Prime',     montos:[0,0,0,0,0,0,0,0,0,0,0,1000] },
+    { concepto:'Préstamo',  montos:[11500,11500,11500,11500,11500,11500,11500,11500,11500,11500,11500,11500] },
     { concepto:'Medicinas', montos:[10000,10000,10000,10000,10000,10000,10000,10000,10000,10000,10000,10000] },
+    { concepto:'Ale',       montos:[6000,6000,6000,6000,6000,6000,6000,6000,6000,6000,6000,6000] },
+    { concepto:'Terreno',   montos:[3000,3000,3000,3000,3000,3000,3000,3000,3000,3000,3000,3000] },
   ],
   margen: 30
 };
@@ -931,15 +944,18 @@ async function sendMessage() {
     if(json.content && json.content[0]) {
       const raw = json.content[0].text;
       try {
-        const clean = raw.replace(/```json|```/g, '').trim();
+        const clean = raw.replace(/```json[\s\S]*?```/g, s => s.slice(7,-3)).replace(/```/g,'').trim();
         const parsed = JSON.parse(clean);
-        const msg = (parsed.confirmacion || '') + (parsed.pregunta ? '<br><span style="color:var(--yellow)">→ ' + parsed.pregunta + '</span>' : '');
+        let msg = parsed.confirmacion || '';
+        if(parsed.pregunta) msg += '<br><span style="color:var(--yellow)">→ ' + parsed.pregunta + '</span>';
         addMsg('max', msg || raw);
       } catch(e2) {
-        addMsg('max', raw);
+        // Si no es JSON válido, mostrar el texto directamente
+        const sinJson = raw.replace(/```json[\s\S]*?```/g,'').replace(/```/g,'').trim();
+        addMsg('max', sinJson || raw);
       }
     } else {
-      addMsg('max', 'Sin respuesta: ' + JSON.stringify(json).substring(0,100));
+      addMsg('max', 'Sin respuesta del servidor.');
     }
   } catch(e) { hideTyping(); addMsg('max', 'Error: ' + e.message); }
 }
