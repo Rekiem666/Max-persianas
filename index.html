@@ -943,7 +943,7 @@ async function sendMessage() {
             .join(' · ');
           addMsg('max', msg + '<br><br><small style="color:var(--muted)">' + resumen + '</small>' +
             '<div class="confirm-btns">' +
-            '<button class="confirm-btn primary" onclick="guardarDatos(' + JSON.stringify(JSON.stringify(parsed)) + ')">✓ Guardar</button>' +
+            '<button class="confirm-btn primary" onclick='guardarDatos(this)' data-parsed='' + encodeURIComponent(JSON.stringify(parsed)) + ''>✓ Guardar</button>' +
             '<button class="confirm-btn" onclick="this.parentElement.parentElement.parentElement.remove()">✗ Cancelar</button>' +
             '</div>');
         } else {
@@ -957,12 +957,16 @@ async function sendMessage() {
     } else {
       addMsg('max', 'Sin respuesta: ' + JSON.stringify(json));
     }
-  } catch(e) { hideTyping(); addMsg('max', 'Error: ' + e.message); }
+  } catch(e) { 
+    hideTyping(); 
+    addMsg('max', 'Error: ' + (e.message || JSON.stringify(e))); 
+    console.error('MAX error:', e);
+  }
 }
 
-async function guardarDatos(parsedStr) {
+async function guardarDatos(btn) {
   try {
-    const parsed = JSON.parse(parsedStr);
+    const parsed = JSON.parse(decodeURIComponent(btn.dataset.parsed));
     const { tipo, datos } = parsed;
     const fecha = new Date().toISOString().split('T')[0];
     
