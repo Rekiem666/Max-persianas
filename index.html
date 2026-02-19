@@ -1416,21 +1416,18 @@ async function sendMessage() {
   showTyping();
 
   try {
-    const res = await fetch(APPS_URL, {
+    const res = await fetch('/.netlify/functions/claude', {
       method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        action: 'askClaude',
-        payload: {
-          model: 'claude-haiku-4-5-20251001',
-          max_tokens: 500,
-          system: MAX_SYSTEM,
-          messages: chatHistory
-        }
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 500,
+        system: MAX_SYSTEM,
+        messages: chatHistory
       })
     });
 
-    const wrapper = await res.json();
-    const json = wrapper.data || wrapper;
+    const json = await res.json();
     const raw = json.content[0].text;
     hideTyping();
 
