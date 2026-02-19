@@ -957,23 +957,19 @@ async function sendMessage() {
     const json = await res.json();
     hideTyping();
     if(json.content && json.content[0]) {
-      const raw = json.content[0].text.trim();
+      const raw = json.content[0].text.trim().replace(/^```json\s*/,'').replace(/^```\s*/,'').replace(/\s*```$/,'');
       try {
-        const clean = raw.replace(/^```json\s*/,'').replace(/^```\s*/,'').replace(/\s*```$/,'').trim();
-        const parsed = JSON.parse(clean);
-        let msg = parsed.confirmacion || '';
+        const parsed = JSON.parse(raw);
+        const msg = parsed.confirmacion || '';
         if(parsed.pregunta) {
-          msg += '<br><span style="color:var(--yellow)">→ ' + parsed.pregunta + '</span>';
-          addMsg('max', msg);
+          addMsg('max', msg + '<br><span style="color:var(--yellow)">→ ' + parsed.pregunta + '</span>');
         } else if(parsed.tipo && parsed.tipo !== 'PREGUNTA' && parsed.tipo !== 'DESCONOCIDO') {
-          // Guardar automático
-          addMsg('max', msg + ' <span style="color:var(--muted);font-size:11px">Guardando...</span>');
-          guardarRegistro(JSON.stringify(parsed));
+          addMsg('max', msg + ' <span style="color:var(--green);font-size:11px">Guardando...</span>');
+          guardarRegistro(parsed);
         } else {
           addMsg('max', msg || raw);
         }
-      } catch(e2) {
-        addMsg('max', raw);
+      } catch(e2) { addMsg('max', raw); }
     } else {
       addMsg('max', 'Error: ' + JSON.stringify(json).substring(0,100));
     }
