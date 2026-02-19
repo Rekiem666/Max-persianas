@@ -848,7 +848,22 @@ function diasHabilesRestantes() {
 
 // ── CONFIGURACIÓN ──
 const APPS_URL = 'https://script.google.com/macros/s/AKfycbxUZgf880vovrTfD8b3QZEXxe7wmXytv1UnLDGvl6jeBWwges6U3u-jAepyzYG8yld4Og/exec';
-const MAX_SYSTEM = `Eres MAX, asistente financiero. Extrae datos de leads, ventas, pagos y gastos. Responde siempre en JSON.`;
+const MAX_SYSTEM = `Eres MAX, el asistente financiero de una empresa de persianas en México (Brum Morlet).
+
+Tu trabajo es interpretar mensajes en lenguaje natural y extraer datos para registrar en el negocio.
+
+RESPONDE SIEMPRE EN JSON PURO, SIN MARKDOWN, SIN TEXTO EXTRA. Solo el objeto JSON.
+
+Formato exacto:
+{"tipo":"LEAD|VENTA|PAGO|GASTO_FIJO|GASTO_VARIABLE|PREGUNTA","datos":{...},"confirmacion":"texto breve","pregunta":"solo si falta dato crítico"}
+
+Para LEAD datos: nombre, canal(Llamada/WhatsApp/Referido/Otro), producto, cotizacion, notas
+Para VENTA datos: cliente, producto, monto, factura(Si/No), status(Con anticipo/Pagado/Por cobrar)
+Para PAGO datos: cliente, monto, tipo(Anticipo/Liquidación), forma(Transferencia/Efectivo/Tarjeta)
+Para GASTO_FIJO datos: categoria, descripcion, monto, iva(Si/No), status(Pagado/Por pagar)
+Para GASTO_VARIABLE datos: descripcion, monto, iva(Si/No), proveedor, status(Pagado/Por pagar)
+
+Sé directo e informal. confirmacion máximo 1 línea.`;
 
 function showTab(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -942,22 +957,48 @@ async function sendMessage() {
     const json = await res.json();
     hideTyping();
     if(json.content && json.content[0]) {
-      const raw = json.content[0].text;
+      const raw = json.content[0].text.trim();
       try {
-        const clean = raw.replace(/```json[\s\S]*?```/g, s => s.slice(7,-3)).replace(/```/g,'').trim();
-        const parsed = JSON.parse(clean);
+        const parsed = JSON.parse(raw);
         let msg = parsed.confirmacion || '';
         if(parsed.pregunta) msg += '<br><span style="color:var(--yellow)">→ ' + parsed.pregunta + '</span>';
+        if(parsed.tipo && parsed.tipo !== 'PREGUNTA' && parsed.tipo !== 'DESCONOCIDO' && !parsed.pregunta) {
+          const encoded = encodeURIComponent(JSON.stringify(parsed));
+          msg += '<div style="margin-top:10px;display:flex;gap:8px">' +
+            '<button onclick="guardarRegistro(decodeURIComponent(\'' + encoded + '\'))" style="background:var(--accent);border:none;border-radius:8px;padding:6px 14px;color:white;cursor:pointer;font-size:12px">✓ Guardar</button>' +
+            '<button onclick="this.parentElement.parentElement.remove()" style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:6px 14px;color:var(--muted);cursor:pointer;font-size:12px">✗ Cancelar</button>' +
+            '</div>';
+        }
         addMsg('max', msg || raw);
       } catch(e2) {
-        // Si no es JSON válido, mostrar el texto directamente
-        const sinJson = raw.replace(/```json[\s\S]*?```/g,'').replace(/```/g,'').trim();
-        addMsg('max', sinJson || raw);
+        addMsg('max', raw);
       }
     } else {
-      addMsg('max', 'Sin respuesta del servidor.');
+      addMsg('max', 'Error: ' + JSON.stringify(json).substring(0,100));
     }
   } catch(e) { hideTyping(); addMsg('max', 'Error: ' + e.message); }
+}
+
+async function guardarRegistro(parsedStr) {
+  try {
+    const parsed = JSON.parse(parsedStr);
+    const { tipo, datos } = parsed;
+    const fecha = new Date().toISOString().split('T')[0];
+    const actionMap = {'LEAD':'addLead','VENTA':'addVenta','PAGO':'addPago','GASTO_FIJO':'addGasto','GASTO_VARIABLE':'addGasto'};
+    const action = actionMap[tipo];
+    if(!action) { addMsg('max', 'Tipo no reconocido: ' + tipo); return; }
+    const payload = {...datos, fecha};
+    if(tipo==='GASTO_FIJO') payload.tipo='Fijo';
+    if(tipo==='GASTO_VARIABLE') payload.tipo='Variable';
+    const res = await fetch(APPS_URL, {method:'POST', body: JSON.stringify({action, payload})});
+    const result = await res.json();
+    if(result.ok) {
+      addMsg('max', '✓ Guardado correctamente');
+      loadFromSheets();
+    } else {
+      addMsg('max', 'Error guardando: ' + JSON.stringify(result));
+    }
+  } catch(e) { addMsg('max', 'Error: ' + e.message); }
 }
 
 function addMsg(role, text) {
