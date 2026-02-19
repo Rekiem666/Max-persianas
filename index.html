@@ -1428,6 +1428,12 @@ async function sendMessage() {
     });
 
     const json = await res.json();
+    if(!json || !json.content || !json.content[0]) {
+      hideTyping();
+      addMessage('max', 'Error respuesta: ' + JSON.stringify(json));
+      sendBtn.disabled = false;
+      return;
+    }
     const raw = json.content[0].text;
     hideTyping();
 
