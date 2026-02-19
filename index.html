@@ -12,562 +12,40 @@
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj4KICA8cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjEwMCIgZmlsbD0iIzBjMGMxNCIvPgogIDxkZWZzPgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCIgeTE9IjAiIHgyPSI1MTIiIHkyPSI1MTIiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzFjMWMyZSIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMwYzBjMTQiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgPC9kZWZzPgogIDxyZWN0IHdpZHRoPSI1MTIiIGhlaWdodD0iNTEyIiByeD0iMTAwIiBmaWxsPSJ1cmwoI2cpIi8+CiAgPHRleHQgeD0iMjU2IiB5PSIzMjAiIGZvbnQtZmFtaWx5PSJBcmlhbCBCbGFjaywgc2Fucy1zZXJpZiIgZm9udC13ZWlnaHQ9IjkwMCIgZm9udC1zaXplPSIyMjAiIGZpbGw9IiM3YzZiZmYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGxldHRlci1zcGFjaW5nPSItOCI+TUFYPC90ZXh0PgogIDxyZWN0IHg9IjgwIiB5PSIzNjAiIHdpZHRoPSIzNTIiIGhlaWdodD0iNiIgcng9IjMiIGZpbGw9IiMwMGU1YTAiIG9wYWNpdHk9IjAuOCIvPgo8L3N2Zz4=">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #0c0c14;
-  --surface: #13131f;
-  --surface2: #1c1c2e;
-  --border: #2a2a40;
-  --accent: #7c6bff;
-  --green: #00e5a0;
-  --yellow: #ffcc47;
-  --red: #ff5c6b;
-  --orange: #ff8c42;
-  --text: #e8e8f4;
-  --muted: #5a5a7a;
-  --radius: 14px;
-}
+:root { --bg: #0c0c14; --surface: #13131f; --surface2: #1c1c2e; --border: #2a2a40; --accent: #7c6bff; --green: #00e5a0; --yellow: #ffcc47; --red: #ff5c6b; --orange: #ff8c42; --text: #e8e8f4; --muted: #5a5a7a; --radius: 14px; }
 * { margin:0; padding:0; box-sizing:border-box; }
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 13px;
-  line-height: 1.5;
-  min-height: 100vh;
-}
-header {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  padding: 14px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-.logo {
-  font-family: 'Syne', sans-serif;
-  font-weight: 800;
-  font-size: 18px;
-  letter-spacing: -0.5px;
-}
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px; min-height: 100vh; }
+header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+.logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; }
 .logo span { color: var(--accent); }
-.fecha {
-  color: var(--muted);
-  font-size: 12px;
-}
-.tabs {
-  display: flex;
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  padding: 0 20px;
-  gap: 2px;
-  overflow-x: auto;
-}
-.tab {
-  padding: 10px 14px;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--muted);
-  cursor: pointer;
-  border-bottom: 2px solid transparent;
-  white-space: nowrap;
-  transition: all 0.2s;
-}
+.tabs { display: flex; background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 20px; gap: 2px; overflow-x: auto; }
+.tab { padding: 10px 14px; font-size: 12px; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; }
 .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
-.tab:hover { color: var(--text); }
 .page { display: none; padding: 20px; max-width: 900px; margin: 0 auto; }
 .page.active { display: block; }
-
-/* SEMÁFORO */
-.semaforo {
-  background: linear-gradient(135deg, #13131f 0%, #1c1c2e 100%);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 20px;
-  margin-bottom: 16px;
-  position: relative;
-  overflow: hidden;
-}
-.semaforo::before {
-  content: '';
-  position: absolute;
-  top: -40px; right: -40px;
-  width: 120px; height: 120px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(124,107,255,0.15) 0%, transparent 70%);
-}
-.semaforo-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  color: var(--muted);
-  margin-bottom: 12px;
-}
-.necesitas {
-  font-family: 'Syne', sans-serif;
-  font-size: 28px;
-  font-weight: 800;
-  margin-bottom: 4px;
-}
-.necesitas-label {
-  font-size: 12px;
-  color: var(--muted);
-  margin-bottom: 16px;
-}
-.progress-bar {
-  background: var(--surface2);
-  border-radius: 8px;
-  height: 8px;
-  margin-bottom: 8px;
-  overflow: hidden;
-}
-.progress-fill {
-  height: 100%;
-  border-radius: 8px;
-  transition: width 0.8s ease;
-}
-.semaforo-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 10px;
-  margin-top: 14px;
-}
-.sem-item {
-  background: var(--surface2);
-  border-radius: 10px;
-  padding: 12px;
-  text-align: center;
-}
-.sem-item .val {
-  font-family: 'Syne', sans-serif;
-  font-size: 16px;
-  font-weight: 700;
-  margin-bottom: 3px;
-}
-.sem-item .lbl {
-  font-size: 10px;
-  color: var(--muted);
-  line-height: 1.3;
-}
-.estado-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-  margin-top: 12px;
-}
-.estado-green { background: rgba(0,229,160,0.15); color: var(--green); border: 1px solid rgba(0,229,160,0.3); }
-.estado-yellow { background: rgba(255,204,71,0.15); color: var(--yellow); border: 1px solid rgba(255,204,71,0.3); }
-.estado-red { background: rgba(255,92,107,0.15); color: var(--red); border: 1px solid rgba(255,92,107,0.3); }
-
-/* GRID METRICS */
-.metrics-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 16px;
-}
-.metric-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 16px;
-  animation: fadeUp 0.4s ease both;
-}
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.metric-section {
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--muted);
-  margin-bottom: 10px;
-  padding-bottom: 6px;
-  border-bottom: 1px solid var(--border);
-}
-.metric-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 5px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.04);
-}
-.metric-row:last-child { border-bottom: none; }
-.metric-label { color: var(--muted); font-size: 12px; }
-.metric-val {
-  font-weight: 600;
-  font-size: 13px;
-  font-family: 'Syne', sans-serif;
-}
-.green { color: var(--green); }
-.yellow { color: var(--yellow); }
-.red { color: var(--red); }
-.accent { color: var(--accent); }
-.orange { color: var(--orange); }
-
-/* TABLA */
-.table-container {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-  margin-bottom: 16px;
-}
-.table-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 14px 16px;
-  border-bottom: 1px solid var(--border);
-}
-.table-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 13px;
-  font-weight: 700;
-}
-.btn-add {
-  background: var(--accent);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  padding: 6px 12px;
-  font-size: 11px;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: 'Syne', sans-serif;
-  transition: all 0.2s;
-}
-.btn-add:hover { background: #6a59e0; transform: translateY(-1px); }
+.semaforo { background: linear-gradient(135deg, #13131f 0%, #1c1c2e 100%); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; }
+.necesitas { font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800; }
+.metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+.metric-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+.table-container { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 16px; }
 table { width: 100%; border-collapse: collapse; }
-th {
-  text-align: left;
-  padding: 10px 14px;
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: var(--muted);
-  background: var(--surface2);
-  border-bottom: 1px solid var(--border);
-}
-td {
-  padding: 10px 14px;
-  font-size: 12px;
-  border-bottom: 1px solid rgba(255,255,255,0.04);
-}
-tr:last-child td { border-bottom: none; }
-tr:hover td { background: rgba(255,255,255,0.02); }
-.badge {
-  display: inline-block;
-  padding: 3px 8px;
-  border-radius: 6px;
-  font-size: 10px;
-  font-weight: 600;
-}
-.badge-nuevo { background: rgba(124,107,255,0.2); color: var(--accent); }
-.badge-cotizado { background: rgba(255,204,71,0.2); color: var(--yellow); }
-.badge-cerrado { background: rgba(0,229,160,0.2); color: var(--green); }
-.badge-perdido { background: rgba(255,92,107,0.2); color: var(--red); }
-.badge-pagado { background: rgba(0,229,160,0.2); color: var(--green); }
-.badge-porpagar { background: rgba(255,204,71,0.2); color: var(--yellow); }
-
-/* GASTOS FIJOS */
-.gf-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 8px;
-}
-.gf-row {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
-  gap: 8px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 12px 16px;
-  align-items: center;
-}
-.gf-row.header {
-  background: var(--surface2);
-  font-size: 10px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: var(--muted);
-}
-.gf-concepto { font-size: 13px; font-weight: 500; }
-.gf-cat {
-  font-size: 10px;
-  color: var(--muted);
-  display: block;
-  margin-top: 1px;
-}
-.input-blue {
-  background: rgba(0,100,255,0.08);
-  border: 1px solid rgba(0,100,255,0.2);
-  border-radius: 6px;
-  padding: 6px 8px;
-  color: #7ab0ff;
-  font-size: 12px;
-  font-weight: 600;
-  width: 100%;
-  text-align: right;
-  outline: none;
-  font-family: 'DM Sans', sans-serif;
-}
-.input-blue:focus { border-color: rgba(0,100,255,0.5); }
-.diff-pos { color: var(--green); font-size: 12px; font-weight: 600; text-align: right; }
-.diff-neg { color: var(--red); font-size: 12px; font-weight: 600; text-align: right; }
-
-/* MODAL */
-.modal-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.7);
-  z-index: 200;
-  align-items: center;
-  justify-content: center;
-}
-.modal-overlay.open { display: flex; }
-.modal {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 24px;
-  width: 90%;
-  max-width: 420px;
-  animation: fadeUp 0.3s ease;
-}
-.modal-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 16px;
-  font-weight: 700;
-  margin-bottom: 16px;
-}
-.form-group { margin-bottom: 12px; }
-.form-label {
-  display: block;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.8px;
-  color: var(--muted);
-  margin-bottom: 6px;
-}
-.form-input, .form-select {
-  width: 100%;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 10px 12px;
-  color: var(--text);
-  font-size: 13px;
-  font-family: 'DM Sans', sans-serif;
-  outline: none;
-  transition: border-color 0.2s;
-}
-.form-input:focus, .form-select:focus { border-color: var(--accent); }
-.form-select option { background: var(--surface2); }
-.modal-actions { display: flex; gap: 10px; margin-top: 16px; }
-.btn-cancel {
-  flex: 1;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 10px;
-  color: var(--muted);
-  cursor: pointer;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 13px;
-}
-.btn-save {
-  flex: 2;
-  background: var(--accent);
-  border: none;
-  border-radius: 8px;
-  padding: 10px;
-  color: white;
-  cursor: pointer;
-  font-family: 'Syne', sans-serif;
-  font-weight: 600;
-  font-size: 13px;
-}
-.btn-save:hover { background: #6a59e0; }
-
-/* Responsive */
-@media (max-width: 600px) {
-  .metrics-grid { grid-template-columns: 1fr; }
-  .semaforo-grid { grid-template-columns: 1fr 1fr; }
-  .gf-row { grid-template-columns: 1fr 1fr; }
-  .gf-row > *:nth-child(3), .gf-row > *:nth-child(4) { display: none; }
-}
-
-/* MAX CHAT */
-.chat-mic {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  width: 36px; height: 36px;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer;
-  flex-shrink: 0;
-  font-size: 15px;
-  transition: all 0.2s;
-}
-.chat-mic:hover { border-color: var(--accent); }
-.chat-mic.recording {
-  background: rgba(255,92,107,0.2);
-  border-color: var(--red);
-  animation: pulse-mic 1s infinite;
-}
-@keyframes pulse-mic {
-  0%,100% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-}
-
-.chat-wrap {
-  display: flex;
-  flex-direction: column;
-  height: calc(100vh - 110px);
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 0 20px 20px;
-}
-.chat-messages {
-  flex: 1;
-  overflow-y: auto;
-  padding: 16px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-.msg {
-  display: flex;
-  gap: 10px;
-  animation: fadeUp 0.3s ease;
-}
+th { text-align: left; padding: 10px 14px; font-size: 10px; color: var(--muted); background: var(--surface2); }
+td { padding: 10px 14px; font-size: 12px; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.chat-wrap { display: flex; flex-direction: column; height: calc(100vh - 160px); }
+.chat-messages { flex: 1; overflow-y: auto; padding: 16px 0; display: flex; flex-direction: column; gap: 12px; }
+.msg { display: flex; gap: 10px; }
 .msg.user { flex-direction: row-reverse; }
-.msg-avatar {
-  width: 32px; height: 32px;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px; font-weight: 700;
-  flex-shrink: 0;
-  font-family: 'Syne', sans-serif;
-}
+.msg-avatar { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-weight: 700; }
 .msg.user .msg-avatar { background: var(--accent); color: white; }
 .msg.max .msg-avatar { background: var(--green); color: #0c0c14; }
-.msg-bubble {
-  max-width: 75%;
-  padding: 10px 14px;
-  border-radius: 14px;
-  font-size: 13px;
-  line-height: 1.6;
-}
-.msg.user .msg-bubble {
-  background: var(--accent);
-  color: white;
-  border-bottom-right-radius: 4px;
-}
-.msg.max .msg-bubble {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  color: var(--text);
-  border-bottom-left-radius: 4px;
-}
-.msg-bubble .confirm-btns { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
-.confirm-btn {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 6px 12px;
-  color: var(--text);
-  cursor: pointer;
-  font-size: 12px;
-  font-family: 'DM Sans', sans-serif;
-  transition: all 0.2s;
-}
-.confirm-btn:hover { border-color: var(--accent); color: var(--accent); }
-.confirm-btn.primary { background: var(--accent); border-color: var(--accent); color: white; }
-.chat-input-wrap {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  display: flex;
-  align-items: flex-end;
-  gap: 10px;
-  padding: 10px 14px;
-  margin-top: 8px;
-}
-.chat-input {
-  flex: 1;
-  background: transparent;
-  border: none;
-  color: var(--text);
-  font-size: 14px;
-  font-family: 'DM Sans', sans-serif;
-  outline: none;
-  resize: none;
-  max-height: 120px;
-  line-height: 1.5;
-}
-.chat-input::placeholder { color: var(--muted); }
-.chat-send {
-  background: var(--accent);
-  border: none;
-  border-radius: 10px;
-  width: 36px; height: 36px;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: all 0.2s;
-  color: white;
-  font-size: 16px;
-}
-.chat-send:hover { background: #6a59e0; transform: scale(1.05); }
-.chat-send:disabled { background: var(--border); cursor: not-allowed; transform: none; }
-.typing {
-  display: flex; gap: 4px; align-items: center;
-  padding: 10px 14px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  border-bottom-left-radius: 4px;
-  width: fit-content;
-}
-.typing span {
-  width: 6px; height: 6px;
-  background: var(--muted);
-  border-radius: 50%;
-  animation: bounce 1.2s infinite;
-}
-.typing span:nth-child(2) { animation-delay: 0.2s; }
-.typing span:nth-child(3) { animation-delay: 0.4s; }
-@keyframes bounce {
-  0%,60%,100% { transform: translateY(0); }
-  30% { transform: translateY(-6px); }
-}
-.saved-badge {
-  display: inline-flex; align-items: center; gap: 4px;
-  background: rgba(0,229,160,0.15);
-  border: 1px solid rgba(0,229,160,0.3);
-  border-radius: 6px;
-  padding: 3px 8px;
-  font-size: 11px;
-  color: var(--green);
-  margin-top: 6px;
-}
+.msg-bubble { max-width: 75%; padding: 10px 14px; border-radius: 14px; font-size: 13px; line-height: 1.6; background: var(--surface); border: 1px solid var(--border); }
+.msg.user .msg-bubble { background: var(--accent); color: white; border-bottom-right-radius: 4px; }
+.chat-input-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; display: flex; align-items: flex-end; gap: 10px; padding: 10px 14px; }
+.chat-input { flex: 1; background: transparent; border: none; color: var(--text); outline: none; resize: none; font-family: 'DM Sans', sans-serif; }
+.chat-send { background: var(--accent); border: none; border-radius: 10px; width: 36px; height: 36px; color: white; cursor: pointer; }
+.typing { display: flex; gap: 4px; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; width: fit-content; }
+.typing span { width: 6px; height: 6px; background: var(--muted); border-radius: 50%; animation: bounce 1.2s infinite; }
+@keyframes bounce { 0%,60%,100% { transform: translateY(0); } 30% { transform: translateY(-6px); } }
 </style>
 </head>
 <body>
@@ -582,121 +60,33 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   <div class="tab" onclick="showTab('max')">⚡ MAX</div>
   <div class="tab" onclick="showTab('leads')">Leads</div>
   <div class="tab" onclick="showTab('ventas')">Ventas</div>
-  <div class="tab" onclick="showTab('pagos')">Pagos</div>
-  <div class="tab" onclick="showTab('gastos')">Gastos</div>
-  <div class="tab" onclick="showTab('fijos')">Gastos Fijos</div>
+</div>
+
+<div class="page active" id="page-dashboard">
+  <div class="semaforo">
+    <div class="necesitas" id="necesitas-val">$0</div>
+    <div id="estado-badge" class="badge">Cargando datos...</div>
+  </div>
+  <div class="metrics-grid">
+    <div class="metric-card"><div>Total Ventas</div><div id="m-ventas-total">$0</div></div>
+    <div class="metric-card"><div>Leads Hoy</div><div id="m-leads-total">0</div></div>
+  </div>
 </div>
 
 <div class="page" id="page-max">
   <div class="chat-wrap">
     <div class="chat-messages" id="chat-messages">
-      <div class="msg max">
-        <div class="msg-avatar">M</div>
-        <div class="msg-bubble">
-          Hola. Soy MAX. Dime qué pasó hoy — un lead, una venta, un pago, un gasto — y lo registro al momento.<br><br>
-          <span style="color:var(--muted); font-size:12px;">Ejemplos: "cerré con Ana, persianas sala, 12 mil sin factura" · "llegó lead por WhatsApp, quiere blackout" · "pagué nómina 12,500"</span>
-        </div>
-      </div>
+      <div class="msg max"><div class="msg-avatar">M</div><div class="msg-bubble">Hola. Soy MAX. Dime qué pasó hoy.</div></div>
     </div>
     <div class="chat-input-wrap">
-      <textarea class="chat-input" id="chat-input" placeholder="Dime qué pasó..." rows="1"
-        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMessage()}"
-        oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
-      <button class="chat-mic" id="chat-mic" onclick="toggleMic()" title="Dictar">🎤</button>
-      <button class="chat-send" id="chat-send" onclick="sendMessage()">↑</button>
-    </div>
-  </div>
-</div>
-
-<div class="page active" id="page-dashboard">
-  <div class="semaforo" id="semaforo-card">
-    <div class="semaforo-title">🎯 Punto de equilibrio diario</div>
-    <div class="necesitas" id="necesitas-val">$0</div>
-    <div class="necesitas-label">necesitas cerrar hoy para llegar a la meta</div>
-    <div class="progress-bar">
-      <div class="progress-fill" id="progress-fill" style="width:0%"></div>
-    </div>
-    <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--muted); margin-bottom:4px;">
-      <span>Avance: <strong id="pct-avance" style="color:var(--text)">0%</strong></span>
-      <span>Meta: <strong id="meta-display" style="color:var(--text)">$0</strong></span>
-    </div>
-    <div id="estado-badge" class="estado-badge estado-yellow">⚠️ Cargando datos...</div>
-    <div class="semaforo-grid">
-      <div class="sem-item">
-        <div class="val green" id="sem-vendido">$0</div>
-        <div class="lbl">Vendido este mes</div>
-      </div>
-      <div class="sem-item">
-        <div class="val red" id="sem-faltante">$0</div>
-        <div class="lbl">Falta para meta</div>
-      </div>
-      <div class="sem-item">
-        <div class="val accent" id="sem-dias">0</div>
-        <div class="lbl">Días hábiles restantes</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="metrics-grid">
-    <div class="metric-card" style="animation-delay:0.1s">
-      <div class="metric-section">💰 Ventas del mes</div>
-      <div class="metric-row"><span class="metric-label">Total ventas</span><span class="metric-val green" id="m-ventas-total">$0</span></div>
-      <div class="metric-row"><span class="metric-label">Con factura</span><span class="metric-val green" id="m-ventas-factura">$0</span></div>
-      <div class="metric-row"><span class="metric-label">Sin factura</span><span class="metric-val green" id="m-ventas-nofactura">$0</span></div>
-      <div class="metric-row"><span class="metric-label">IVA por pagar</span><span class="metric-val red" id="m-iva-cobrado">$0</span></div>
-    </div>
-    <div class="metric-card" style="animation-delay:0.15s">
-      <div class="metric-section">📥 Cobros</div>
-      <div class="metric-row"><span class="metric-label">Cobrado este mes</span><span class="metric-val green" id="m-cobrado">$0</span></div>
-      <div class="metric-row"><span class="metric-label">Por cobrar</span><span class="metric-val yellow" id="m-porcobrar">$0</span></div>
-    </div>
-    <div class="metric-card" style="animation-delay:0.2s">
-      <div class="metric-section">📤 Gastos del mes</div>
-      <div class="metric-row"><span class="metric-label">Variables pagados</span><span class="metric-val red" id="m-gv-pagados">$0</span></div>
-      <div class="metric-row"><span class="metric-label">Fijos del mes</span><span class="metric-val red" id="m-gf-mes">$0</span></div>
-      <div class="metric-row"><span class="metric-label">Gasto casa</span><span class="metric-val orange" id="m-gcasa">$0</span></div>
-      <div class="metric-row"><span class="metric-label">Por pagar proveedores</span><span class="metric-val yellow" id="m-porpagar">$0</span></div>
-    </div>
-    <div class="metric-card" style="animation-delay:0.25s">
-      <div class="metric-section">📊 Leads y conversión</div>
-      <div class="metric-row"><span class="metric-label">Leads este mes</span><span class="metric-val accent" id="m-leads-total">0</span></div>
-      <div class="metric-row"><span class="metric-label">Llamadas</span><span class="metric-val accent" id="m-leads-llamada">0</span></div>
-      <div class="metric-row"><span class="metric-label">WhatsApp</span><span class="metric-val accent" id="m-leads-wa">0</span></div>
-      <div class="metric-row"><span class="metric-label">Cerrados</span><span class="metric-val green" id="m-cerrados">0</span></div>
-      <div class="metric-row"><span class="metric-label">Hit rate</span><span class="metric-val green" id="m-hitrate">0%</span></div>
-      <div class="metric-row"><span class="metric-label">Costo por lead</span><span class="metric-val yellow" id="m-cpl">$0</span></div>
-    </div>
-  </div>
-
-  <div class="metric-card" style="animation-delay:0.3s">
-    <div class="metric-section">📈 Margen real del mes</div>
-    <div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:12px; text-align:center; padding:8px 0;">
-      <div>
-        <div style="font-family:'Syne',sans-serif; font-size:18px; font-weight:700;" class="green" id="m-ingresos-reales">$0</div>
-        <div style="font-size:10px; color:var(--muted); margin-top:3px;">Ingresos cobrados</div>
-      </div>
-      <div>
-        <div style="font-family:'Syne',sans-serif; font-size:18px; font-weight:700;" class="red" id="m-gastos-totales">$0</div>
-        <div style="font-size:10px; color:var(--muted); margin-top:3px;">Gastos totales</div>
-      </div>
-      <div>
-        <div style="font-family:'Syne',sans-serif; font-size:18px; font-weight:700;" id="m-utilidad">$0</div>
-        <div style="font-size:10px; color:var(--muted); margin-top:3px;">Utilidad real</div>
-      </div>
-      <div>
-        <div style="font-family:'Syne',sans-serif; font-size:22px; font-weight:800;" id="m-margen-pct">0%</div>
-        <div style="font-size:10px; color:var(--muted); margin-top:3px;">% Margen</div>
-      </div>
+      <textarea class="chat-input" id="chat-input" placeholder="Dime qué pasó..." rows="1"></textarea>
+      <button class="chat-send" onclick="sendMessage()">↑</button>
     </div>
   </div>
 </div>
 
 <div class="page" id="page-leads">
   <div class="table-container">
-    <div class="table-header">
-      <div class="table-title">Leads</div>
-      <button class="btn-add" onclick="openModal('lead')">+ Agregar</button>
-    </div>
     <table>
       <thead><tr><th>Fecha</th><th>Nombre</th><th>Canal</th><th>Producto</th><th>Status</th><th>Cotización</th></tr></thead>
       <tbody id="leads-tbody"></tbody>
@@ -706,10 +96,6 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 
 <div class="page" id="page-ventas">
   <div class="table-container">
-    <div class="table-header">
-      <div class="table-title">Ventas</div>
-      <button class="btn-add" onclick="openModal('venta')">+ Agregar</button>
-    </div>
     <table>
       <thead><tr><th>Fecha</th><th>Cliente</th><th>Producto</th><th>Monto</th><th>Factura</th><th>Status</th></tr></thead>
       <tbody id="ventas-tbody"></tbody>
@@ -717,125 +103,13 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   </div>
 </div>
 
-<div class="page" id="page-pagos">
-  <div class="table-container">
-    <div class="table-header">
-      <div class="table-title">Pagos Recibidos</div>
-      <button class="btn-add" onclick="openModal('pago')">+ Agregar</button>
-    </div>
-    <table>
-      <thead><tr><th>Fecha</th><th>Cliente</th><th>Tipo</th><th>Monto</th><th>Forma de Pago</th></tr></thead>
-      <tbody id="pagos-tbody"></tbody>
-    </table>
-  </div>
-</div>
-
-<div class="page" id="page-gastos">
-  <div class="table-container">
-    <div class="table-header">
-      <div class="table-title">Gastos Variables</div>
-      <button class="btn-add" onclick="openModal('gasto')">+ Agregar</button>
-    </div>
-    <table>
-      <thead><tr><th>Fecha</th><th>Categoría</th><th>Proveedor</th><th>Monto</th><th>IVA</th><th>Status</th></tr></thead>
-      <tbody id="gastos-tbody"></tbody>
-    </table>
-  </div>
-</div>
-
-<div class="page" id="page-fijos">
-  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-    <div style="font-family:'Syne',sans-serif; font-size:15px; font-weight:700;">Gastos Fijos del Negocio</div>
-    <div style="font-size:11px; color:var(--muted);">Mes actual</div>
-  </div>
-  <div id="gf-rows" class="gf-grid"></div>
-  <div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px 16px; margin-top:8px; display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:8px; align-items:center;">
-    <div style="font-family:'Syne',sans-serif; font-weight:700; font-size:13px;">TOTAL FIJOS</div>
-    <div style="text-align:right; font-weight:700; color:var(--accent); font-size:13px;" id="total-presup">$0</div>
-    <div style="text-align:right; font-weight:700; color:var(--red); font-size:13px;" id="total-real">$0</div>
-    <div style="text-align:right; font-weight:700; font-size:13px;" id="total-diff">$0</div>
-  </div>
-  <div style="margin-top:20px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px;">
-    <div style="font-family:'Syne',sans-serif; font-size:13px; font-weight:700; margin-bottom:12px; color:var(--orange);">🏠 Gasto Casa del Mes (automático)</div>
-    <div style="display:flex; align-items:center; gap:12px;">
-      <span style="color:var(--muted); font-size:12px; flex:1;">Total gastos casa este mes:</span>
-      <span id="gasto-casa-display" style="font-family:'Syne',sans-serif; font-size:16px; font-weight:700; color:var(--orange);">$0</span>
-    </div>
-  </div>
-  <div style="margin-top:14px; background:var(--surface); border:1px solid var(--accent); border-radius:var(--radius); padding:16px;">
-    <div style="font-family:'Syne',sans-serif; font-size:13px; font-weight:700; margin-bottom:12px;">🎯 Punto de Equilibrio</div>
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-      <div style="background:var(--surface2); border-radius:10px; padding:12px; text-align:center;">
-        <div style="font-size:10px; color:var(--muted); margin-bottom:4px; text-transform:uppercase; letter-spacing:0.8px;">Margen estimado</div>
-        <div style="display:flex; align-items:center; justify-content:center; gap:4px;">
-          <input type="number" id="margen-input" value="30" min="1" max="99" style="background:transparent; border:none; color:var(--yellow); font-family:'Syne',sans-serif; font-size:22px; font-weight:800; width:50px; text-align:right; outline:none;" oninput="updateAll()">
-          <span style="font-family:'Syne',sans-serif; font-size:22px; font-weight:800; color:var(--yellow);">%</span>
-        </div>
-      </div>
-      <div style="background:var(--surface2); border-radius:10px; padding:12px; text-align:center;">
-        <div style="font-size:10px; color:var(--muted); margin-bottom:4px; text-transform:uppercase; letter-spacing:0.8px;">Debes vender</div>
-        <div style="font-family:'Syne',sans-serif; font-size:18px; font-weight:800; color:var(--green);" id="pe-meta">$0</div>
-        <div style="font-size:10px; color:var(--muted);">al mes</div>
-      </div>
-    </div>
-  </div>
-</div>
-
 <script>
-// ── DATA COMPLETA ──
-let data = {
-  leads: [], ventas: [], pagos: [], gastos: [],
-  gastosFijos: [
-    { concepto:'Renta Bodega 1', cat:'Renta', iva:true,  montos:[12180,12180,12180,12180,12180,12180,12180,12180,12180,12180,12180,12180] },
-    { concepto:'Renta Bodega 2', cat:'Renta', iva:false, montos:[27000,27000,27000,27000,27000,27000,27000,27000,27000,27000,27000,27000] },
-    { concepto:'Luz', cat:'Servicios', iva:true,  montos:[2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000] },
-    { concepto:'Agua', cat:'Servicios', iva:true,  montos:[900,900,900,900,900,900,900,900,900,900,900,900] },
-    { concepto:'Internet', cat:'Servicios', iva:true,  montos:[750,750,750,750,750,750,750,750,750,750,750,750] },
-    { concepto:'Limpieza', cat:'Servicios', iva:false, montos:[1200,1200,1200,1200,1200,1200,1200,1200,1200,1200,1200,1200] },
-    { concepto:'IMSS', cat:'Nómina', iva:false, montos:[10000,10000,10000,10000,10000,10000,10000,10000,10000,10000,10000,10000] },
-    { concepto:'Nóminas', cat:'Nómina', iva:false, montos:[50000,50000,50000,50000,50000,50000,50000,50000,50000,50000,50000,50000] },
-    { concepto:'Aguinaldo', cat:'Nómina', iva:false, montos:[0,0,0,0,0,0,0,0,0,0,12500,12500] },
-    { concepto:'Gasolina', cat:'Operativo', iva:true,  montos:[10000,10000,10000,10000,10000,10000,10000,10000,10000,10000,10000,10000] },
-    { concepto:'Seguro Mazda', cat:'Seguros', iva:true, montos:[0,2341.87,0,0,2341.87,0,0,2341,0,0,2341,0] },
-    { concepto:'Seguro Passat', cat:'Seguros', iva:true, montos:[0,0,4078.35,0,0,0,0,0,4078.35,0,0,0] },
-    { concepto:'Seguro Urvan', cat:'Seguros', iva:true, montos:[0,2560.07,0,0,2560.07,0,0,2560.07,0,0,2560.07,0] },
-    { concepto:'Cámaras', cat:'Suscripciones', iva:false, montos:[400,400,400,400,400,400,400,400,400,400,400,400] },
-    { concepto:'Adobe', cat:'Suscripciones', iva:false, montos:[400,400,400,400,400,400,400,400,400,400,400,400] },
-    { concepto:'Microsoft', cat:'Suscripciones', iva:false, montos:[250,250,250,250,250,250,250,250,250,250,250,250] },
-    { concepto:'IAS (IA/Google/ChatGPT)', cat:'Suscripciones', iva:false, montos:[1200,1200,1200,1200,1200,1200,1200,1200,1200,1200,1200,1200] },
-    { concepto:'Hosting global', cat:'Digital', iva:false, montos:[0,1200,0,0,1200,0,0,1200,0,0,1200,0] },
-    { concepto:'Google Ads', cat:'Marketing', iva:false, montos:[20000,20000,20000,20000,20000,20000,20000,20000,20000,20000,20000,20000] },
-  ],
-  gastosCasa: [
-    { concepto:'Renta casa', montos:[17000,17000,17000,17000,17000,17000,17000,17000,17000,17000,17000,17000] },
-    { concepto:'Colegiatura', montos:[17000,17000,17000,17000,17000,0,0,17000,17000,17000,17000,17000] },
-    { concepto:'Comida', montos:[12000,12000,12000,12000,12000,12000,12000,12000,12000,12000,12000,12000] },
-    { concepto:'Medicinas', montos:[10000,10000,10000,10000,10000,10000,10000,10000,10000,10000,10000,10000] },
-  ],
-  margen: 30
-};
-
-// ── UTILS ──
-function fmt(n) { return new Intl.NumberFormat('es-MX', {style:'currency',currency:'MXN',minimumFractionDigits:0}).format(n||0); }
-function mesActual(fechaStr) {
-  if(!fechaStr) return false;
-  const d = new Date(fechaStr+'T12:00:00');
-  const now = new Date();
-  return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
-}
-function diasHabilesRestantes() {
-  const now = new Date();
-  const fin = new Date(now.getFullYear(), now.getMonth()+1, 0);
-  let dias = 0;
-  const cur = new Date(now);
-  cur.setDate(cur.getDate()+1);
-  while(cur <= fin) { if(cur.getDay() !== 0) dias++; cur.setDate(cur.getDate()+1); }
-  return dias;
-}
-
-// ── CONFIGURACIÓN ──
 const APPS_URL = 'https://script.google.com/macros/s/AKfycbxUZgf880vovrTfD8b3QZEXxe7wmXytv1UnLDGvl6jeBWwges6U3u-jAepyzYG8yld4Og/exec';
-const MAX_SYSTEM = `Eres MAX, asistente financiero. Extrae datos de leads, ventas, pagos y gastos. Responde siempre en JSON.`;
+const MAX_SYSTEM = `Eres MAX, asistente financiero. Responde siempre en JSON.`;
+
+let data = { leads: [], ventas: [], pagos: [], gastos: [] };
+
+function fmt(n) { return new Intl.NumberFormat('es-MX', {style:'currency',currency:'MXN',minimumFractionDigits:0}).format(n||0); }
 
 function showTab(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -850,67 +124,26 @@ async function loadFromSheets() {
     const res = await fetch(APPS_URL + '?action=getData');
     const json = await res.json();
     if(json.ok && json.data) {
-      const d = json.data;
-      if(d.LEADS) data.leads = d.LEADS;
-      if(d.VENTAS) data.ventas = d.VENTAS;
-      if(d.PAGOS) data.pagos = d.PAGOS;
-      if(d.GASTOS) data.gastos = d.GASTOS;
+      data.leads = json.data.LEADS || [];
+      data.ventas = json.data.VENTAS || [];
       renderAll();
-      updateAll();
     }
-  } catch(e) { console.error('Error cargando datos:', e); }
+  } catch(e) { console.error(e); }
 }
 
 function renderAll() {
-  const lt = document.getElementById('leads-tbody'); if(lt) lt.innerHTML = data.leads.map(l=>`<tr><td>${l.Fecha}</td><td>${l.Nombre}</td><td>${l.Canal}</td><td>${l.Producto}</td><td>${l.Status}</td><td>${fmt(l.Cotización)}</td></tr>`).join('');
-  const vt = document.getElementById('ventas-tbody'); if(vt) vt.innerHTML = data.ventas.map(v=>`<tr><td>${v.Fecha}</td><td>${v.Cliente}</td><td>${v.Producto}</td><td>${fmt(v.Monto)}</td><td>${v.Factura}</td><td>${v.Status}</td></tr>`).join('');
-  const pt = document.getElementById('pagos-tbody'); if(pt) pt.innerHTML = data.pagos.map(p=>`<tr><td>${p.Fecha}</td><td>${p.Cliente}</td><td>${p.Tipo}</td><td>${fmt(p.Monto)}</td><td>${p.Forma}</td></tr>`).join('');
-  const gt = document.getElementById('gastos-tbody'); if(gt) gt.innerHTML = data.gastos.map(g=>`<tr><td>${g.Fecha}</td><td>${g.Categoría}</td><td>${g.Proveedor}</td><td>${fmt(g.Monto)}</td><td>${g.IVA}</td><td>${g.Status}</td></tr>`).join('');
-  
-  const container = document.getElementById('gf-rows');
-  if(container) {
-    const m = new Date().getMonth();
-    container.innerHTML = data.gastosFijos.map((gf, i) => `
-      <div class="gf-row">
-        <div><span class="gf-concepto">${gf.concepto}</span></div>
-        <div style="text-align:right">${fmt(gf.montos[m])}</div>
-        <input type="number" class="input-blue" value="${gf.real||''}" oninput="data.gastosFijos[${i}].real=parseFloat(this.value)||0; updateAll()">
-      </div>
-    `).join('');
-  }
-}
-
-function updateAll() {
-  const m = new Date().getMonth();
-  const mesVentas = data.ventas.filter(v => mesActual(v.Fecha));
-  const totalVentas = mesVentas.reduce((s,v)=>s+(parseFloat(v.Monto)||0), 0);
-  const totalFijos = data.gastosFijos.reduce((s,g)=>s+(g.real || g.montos[m]), 0);
-  const totalCasa = data.gastosCasa.reduce((s,g)=>s+g.montos[m], 0);
-  
-  document.getElementById('m-ventas-total').textContent = fmt(totalVentas);
-  document.getElementById('total-real').textContent = fmt(totalFijos);
-  document.getElementById('gasto-casa-display').textContent = fmt(totalCasa);
-  
-  const meta = (totalFijos + totalCasa) / (data.margen / 100);
-  document.getElementById('pe-meta').textContent = fmt(meta);
-  
-  const faltante = Math.max(meta - totalVentas, 0);
-  const dias = diasHabilesRestantes();
-  document.getElementById('necesitas-val').textContent = fmt(dias > 0 ? faltante/dias : 0);
-  document.getElementById('meta-display').textContent = fmt(meta);
-  
-  const pct = Math.min((totalVentas/meta)*100, 100);
-  const fill = document.getElementById('progress-fill');
-  if(fill) {
-    fill.style.width = pct + '%';
-    fill.style.background = pct >= 100 ? 'var(--green)' : pct >= 70 ? 'var(--yellow)' : 'var(--red)';
-  }
+  const vTotal = data.ventas.reduce((s,v)=>s+(parseFloat(v.Monto)||0),0);
+  document.getElementById('m-ventas-total').textContent = fmt(vTotal);
+  document.getElementById('m-leads-total').textContent = data.leads.length;
+  document.getElementById('leads-tbody').innerHTML = data.leads.map(l=>`<tr><td>${l.Fecha}</td><td>${l.Nombre}</td><td>${l.Canal}</td><td>${l.Producto}</td><td>${l.Status}</td><td>${fmt(l.Cotización)}</td></tr>`).join('');
+  document.getElementById('ventas-tbody').innerHTML = data.ventas.map(v=>`<tr><td>${v.Fecha}</td><td>${v.Cliente}</td><td>${v.Producto}</td><td>${fmt(v.Monto)}</td><td>${v.Factura}</td><td>${v.Status}</td></tr>`).join('');
 }
 
 async function sendMessage() {
   const input = document.getElementById('chat-input');
   const text = input.value.trim();
   if(!text) return;
+
   addMsg('user', text);
   input.value = '';
   showTyping();
@@ -926,36 +159,54 @@ async function sendMessage() {
         messages: [{ role: 'user', content: text }]
       })
     });
+
     const json = await res.json();
     hideTyping();
-    if(json.content) {
-      const parsed = JSON.parse(json.content[0].text.replace(/```json|```/g, ''));
-      addMsg('max', parsed.confirmacion);
+
+    // ANALIZAMOS LA RESPUESTA REAL
+    if (json.error) {
+       addMsg('max', 'Error Anthropic: ' + (json.error.message || JSON.stringify(json.error)));
+       return;
     }
-  } catch(e) { hideTyping(); addMsg('max', 'Error respuesta IA.'); }
+
+    if (json.content && json.content[0]) {
+      try {
+        const raw = json.content[0].text;
+        const parsed = JSON.parse(raw.replace(/```json|```/g, '').trim());
+        addMsg('max', parsed.confirmacion);
+      } catch(e) {
+        addMsg('max', 'Error formato JSON: ' + json.content[0].text);
+      }
+    } else {
+      addMsg('max', 'Respuesta inesperada: ' + JSON.stringify(json));
+    }
+
+  } catch(err) {
+    hideTyping();
+    addMsg('max', 'Error técnico: ' + err.message);
+  }
 }
 
 function addMsg(role, text) {
+  const msgs = document.getElementById('chat-messages');
   const div = document.createElement('div');
   div.className = 'msg ' + role;
   div.innerHTML = `<div class="msg-avatar">${role==='user'?'T':'M'}</div><div class="msg-bubble">${text}</div>`;
-  document.getElementById('chat-messages').appendChild(div);
-  document.getElementById('chat-messages').scrollTop = document.getElementById('chat-messages').scrollHeight;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
 }
 
 function showTyping() {
+  const msgs = document.getElementById('chat-messages');
   const div = document.createElement('div');
-  div.id = 'typing';
-  div.className = 'msg max';
+  div.id = 'typing'; div.className = 'msg max';
   div.innerHTML = '<div class="msg-avatar">M</div><div class="typing"><span></span><span></span><span></span></div>';
-  document.getElementById('chat-messages').appendChild(div);
+  msgs.appendChild(div);
 }
+
 function hideTyping() { const el = document.getElementById('typing'); if(el) el.remove(); }
 
-window.onload = () => {
-  document.getElementById('fechaHoy').textContent = new Date().toLocaleDateString('es-MX', {weekday:'long', day:'numeric', month:'long'});
-  loadFromSheets();
-};
+window.onload = () => { loadFromSheets(); };
 </script>
 </body>
 </html>
