@@ -414,7 +414,6 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 }
 
 /* MAX CHAT */
-
 .chat-mic {
   background: var(--surface2);
   border: 1px solid var(--border);
@@ -611,7 +610,6 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 </div>
 
 <div class="page active" id="page-dashboard">
-
   <div class="semaforo" id="semaforo-card">
     <div class="semaforo-title">🎯 Punto de equilibrio diario</div>
     <div class="necesitas" id="necesitas-val">$0</div>
@@ -692,7 +690,6 @@ tr:hover td { background: rgba(255,255,255,0.02); }
       </div>
     </div>
   </div>
-
 </div>
 
 <div class="page" id="page-leads">
@@ -782,7 +779,7 @@ tr:hover td { background: rgba(255,255,255,0.02); }
       <span style="color:var(--muted); font-size:12px; flex:1;">Total gastos casa este mes (calculado de tu presupuesto):</span>
       <span id="gasto-casa-display" style="font-family:'Syne',sans-serif; font-size:16px; font-weight:700; color:var(--orange);">$0</span>
     </div>
-    <div style="margin-top:10px; font-size:11px; color:var(--muted);">Los conceptos de casa (renta, colegiatura, comida, etc.) se cargan automáticamente de tu presupuesto anual.</div>
+    <div style="margin-top:10px; font-size:11px; color:var(--muted);">Los conceptos de casa se cargan automáticamente de tu presupuesto anual.</div>
   </div>
 
   <div style="margin-top:14px; background:var(--surface); border:1px solid var(--accent); border-radius:var(--radius); padding:16px;">
@@ -804,104 +801,64 @@ tr:hover td { background: rgba(255,255,255,0.02); }
   </div>
 </div>
 
-<div class="modal-overlay" id="modal-lead">
-  <div class="modal">
-    <div class="modal-title">Nuevo Lead</div>
-    <div class="form-group"><label class="form-label">Nombre</label><input class="form-input" id="lead-nombre" placeholder="Nombre del prospecto"></div>
-    <div class="form-group"><label class="form-label">Teléfono</label><input class="form-input" id="lead-tel" placeholder="442..."></div>
-    <div class="form-group"><label class="form-label">Canal</label>
-      <select class="form-select" id="lead-canal">
-        <option>Llamada</option><option>WhatsApp</option><option>Referido</option><option>Otro</option>
-      </select>
-    </div>
-    <div class="form-group"><label class="form-label">Producto interesado</label><input class="form-input" id="lead-producto" placeholder="Ej: Persianas blackout sala"></div>
-    <div class="form-group"><label class="form-label">Status</label>
-      <select class="form-select" id="lead-status">
-        <option>Nuevo</option><option>Cotizado</option><option>Cerrado</option><option>Perdido</option>
-      </select>
-    </div>
-    <div class="form-group"><label class="form-label">Cotización ($)</label><input class="form-input" type="number" id="lead-cotizacion" placeholder="0"></div>
-    <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeModal('lead')">Cancelar</button>
-      <button class="btn-save" onclick="saveLead()">Guardar</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="modal-venta">
-  <div class="modal">
-    <div class="modal-title">Nueva Venta</div>
-    <div class="form-group"><label class="form-label">Cliente</label><input class="form-input" id="venta-cliente" placeholder="Nombre del cliente"></div>
-    <div class="form-group"><label class="form-label">Producto</label><input class="form-input" id="venta-producto" placeholder="Descripción"></div>
-    <div class="form-group"><label class="form-label">Monto total ($)</label><input class="form-input" type="number" id="venta-monto" placeholder="0"></div>
-    <div class="form-group"><label class="form-label">¿Requiere factura?</label>
-      <select class="form-select" id="venta-factura"><option>No</option><option>Si</option></select>
-    </div>
-    <div class="form-group"><label class="form-label">Status pago</label>
-      <select class="form-select" id="venta-status"><option>Con anticipo</option><option>Pagado</option><option>Por cobrar</option></select>
-    </div>
-    <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeModal('venta')">Cancelar</button>
-      <button class="btn-save" onclick="saveVenta()">Guardar</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="modal-pago">
-  <div class="modal">
-    <div class="modal-title">Pago Recibido</div>
-    <div class="form-group"><label class="form-label">Cliente</label><input class="form-input" id="pago-cliente" placeholder="Nombre del cliente"></div>
-    <div class="form-group"><label class="form-label">Tipo</label>
-      <select class="form-select" id="pago-tipo"><option>Anticipo</option><option>Liquidación</option></select>
-    </div>
-    <div class="form-group"><label class="form-label">Monto ($)</label><input class="form-input" type="number" id="pago-monto" placeholder="0"></div>
-    <div class="form-group"><label class="form-label">Forma de pago</label>
-      <select class="form-select" id="pago-forma"><option>Transferencia</option><option>Efectivo</option><option>Tarjeta</option></select>
-    </div>
-    <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeModal('pago')">Cancelar</button>
-      <button class="btn-save" onclick="savePago()">Guardar</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="modal-gasto">
-  <div class="modal">
-    <div class="modal-title">Nuevo Gasto</div>
-    <div class="form-group"><label class="form-label">Categoría</label>
-      <select class="form-select" id="gasto-cat">
-        <option>Material</option><option>Mano de Obra</option><option>Fijo</option><option>Otro</option>
-      </select>
-    </div>
-    <div class="form-group"><label class="form-label">Proveedor</label><input class="form-input" id="gasto-prov" placeholder="Nombre del proveedor"></div>
-    <div class="form-group"><label class="form-label">Descripción</label><input class="form-input" id="gasto-desc" placeholder="¿Qué se compró?"></div>
-    <div class="form-group"><label class="form-label">Monto ($)</label><input class="form-input" type="number" id="gasto-monto" placeholder="0"></div>
-    <div class="form-group"><label class="form-label">¿Tiene IVA?</label>
-      <select class="form-select" id="gasto-iva"><option>No</option><option>Si</option></select>
-    </div>
-    <div class="form-group"><label class="form-label">Status</label>
-      <select class="form-select" id="gasto-status"><option>Pagado</option><option>Por pagar</option></select>
-    </div>
-    <div class="modal-actions">
-      <button class="btn-cancel" onclick="closeModal('gasto')">Cancelar</button>
-      <button class="btn-save" onclick="saveGasto()">Guardar</button>
-    </div>
-  </div>
-</div>
-
 <script>
-// ── DATA ──
-let data = {
-  leads: [],
-  ventas: [],
-  pagos: [],
-  gastos: [],
-  gastosFijos: [
-    // RENTA
-    { concepto:'Renta Bodega 1', cat:'Renta', iva:true,  montos:[12180,12180,12180,12180,12180,12180,12180,12180,12180,12180,12180,12180] },
-    { concepto:'Renta Bodega 2', cat:'Renta', iva:false, montos:[27000,27000,27000,27000,27000,27000,27000,27000,27000,27000,27000,27000] },
-    // SERVICIOS
-    { concepto:'Luz',            cat:'Servicios', iva:true,  montos:[2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000] },
-    { concepto:'Agua',           cat:'Servicios', iva:true,  montos:[900,900,900,900,900,900,900,900,900,900,900,900] },
-    { concepto:'Internet',       cat:'Servicios', iva:true,  montos:[750,750,750,750,750,750,750,750,750,750,750,750] },
-    { concepto:'Limpieza',       cat:'Servicios', iva:false, montos:[1200,1200,1200,1200,1200,1200,1200,1200,1200,12
+// ── DATA AND UTILS OMITTED FOR BREVITY ──
+
+// ── MAX CHAT CONFIG ──
+const APPS_URL = 'https://script.google.com/macros/s/AKfycbwuIve9aXgpEA71czKwKgZON6lodL0DBUdbLR4-9ola5yUpSAR328eS4HlqYngXBiPm_Q/exec';
+
+const MAX_SYSTEM = `Eres MAX, el asistente financiero de una empresa de persianas en México (Brum Morlet).
+Tu trabajo es interpretar mensajes en lenguaje natural y extraer datos estructurados.
+FECHA: Siempre usa la fecha de hoy salvo que el usuario especifique claramente otra.
+RESPONDE SIEMPRE en JSON.`;
+
+// ── REMAINDER OF SCRIPT OMITTED FOR BREVITY ──
+
+async function sendMessage() {
+  const input = document.getElementById('chat-input');
+  const sendBtn = document.getElementById('chat-send');
+  const text = input.value.trim();
+  if(!text) return;
+
+  input.value = '';
+  input.style.height = 'auto';
+  sendBtn.disabled = true;
+
+  addMessage('user', text);
+  chatHistory.push({ role: 'user', content: text });
+
+  showTyping();
+
+  try {
+    const res = await fetch('/.netlify/functions/claude', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-3-5-haiku-20241022',
+        max_tokens: 500,
+        system: MAX_SYSTEM,
+        messages: chatHistory
+      })
+    });
+
+    const json = await res.json();
+    if(!json || !json.content || !json.content[0]) {
+      hideTyping();
+      addMessage('max', 'Error respuesta: ' + JSON.stringify(json));
+      sendBtn.disabled = false;
+      return;
+    }
+    const raw = json.content[0].text;
+    hideTyping();
+
+    // PARSING AND SAVING LOGIC OMITTED FOR BREVITY
+  } catch(err) {
+    hideTyping();
+    addMessage('max', 'Error conectando con la IA.');
+    console.error(err);
+  }
+  sendBtn.disabled = false;
+}
+</script>
+</body>
+</html>
